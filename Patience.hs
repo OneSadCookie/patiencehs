@@ -23,7 +23,7 @@ data Move n = Move {
 class Patience p n | p -> n where
     applyMove :: p -> (Move n) -> p
     allPileNames :: p -> [ n ]
-    pileNamed :: p -> n -> Pile
+    pileNamed :: p -> n -> (Pile n)
     deal :: StdGen -> p
     won :: p -> Bool
 

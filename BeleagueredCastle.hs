@@ -9,7 +9,7 @@ import Patience
 import Pile
 import Utility
 
-data BeleagueredCastle = BeleagueredCastle [ Pile ] [ Pile ]
+data BeleagueredCastle = BeleagueredCastle [ Pile PileName ] [ Pile PileName ]
 
 instance Patience BeleagueredCastle PileName where
     applyMove = applyMoveBC

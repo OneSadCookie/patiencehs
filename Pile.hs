@@ -2,7 +2,7 @@ module Pile (
     Hand,
     TakeRule,
     GiveRule,
-    Pile (Pile, takeRule, giveRule, cards),
+    Pile (Pile, pileName, takeRule, giveRule, cards),
     canTakeFrom,
     canGiveTo,
     topCard,
@@ -38,7 +38,8 @@ type Hand = [ Card ]
 type TakeRule = [ Card ] -> Hand -> Bool
 type GiveRule = [ Card ] -> Hand -> Bool
 
-data Pile = Pile {
+data Pile n = Pile {
+    pileName :: n,
     takeRule :: TakeRule,
     giveRule :: GiveRule,
     cards :: [ Card ]
@@ -47,12 +48,12 @@ data Pile = Pile {
 canTakeFrom p = ((takeRule p) (cards p))
 canGiveTo p = ((giveRule p) (cards p))
 
-showPile (Pile _ _ l) = show l
+showPile pile = show (cards pile)
 
-instance Show Pile where
+instance Show (Pile n) where
     show = showPile
 
-topCard (Pile _ _ l) = head l
+topCard (Pile _ _ _ l) = head l
 
 allHands p = allHands' [] p where
     allHands' _ [] = []
@@ -60,7 +61,7 @@ allHands p = allHands' [] p where
         let h' = c:h
         in h' : (allHands' h' cs)
 
-hands (Pile tr _ p) = filter (tr p) (allHands p)
+hands (Pile _ tr _ p) = filter (tr p) (allHands p)
 handsFrom from = filter (canTakeFrom from) (hands from)
 handsFromTo from to = filter (canGiveTo to) (handsFrom from)
 
