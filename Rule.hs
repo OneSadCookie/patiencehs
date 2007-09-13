@@ -27,7 +27,6 @@ module Rule (
 ) where
 
 import Card
-import Hand
 import Pile
 
 type Rule name = (Pile name) -> Hand -> Bool

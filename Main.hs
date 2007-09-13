@@ -9,7 +9,6 @@ import Random
 import Card
 import Deck
 import Game
-import Hand
 import Layout
 import Patience
 import Pile
