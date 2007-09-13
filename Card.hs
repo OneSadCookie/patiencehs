@@ -72,8 +72,8 @@ instance AbstractCard FacingCard where
     suit = suit . abstractCard
 
 instance Show FacingCard where
-    show (FaceUp   card) = "[" ++ show card ++ "]"
-    show (FaceDown card) = "(" ++ show card ++ ")"
+    show (FaceUp   card) = "|" ++ show card ++ "|"
+    show (FaceDown card) = "<" ++ show card ++ ">"
 
 isAlternatingColors (c0:cs@(c1:_)) =
     (color c0) /= (color c1) &&
