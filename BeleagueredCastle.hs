@@ -4,7 +4,7 @@ module BeleagueredCastle (
 
 import Necessities
 
-data PileName = Tableau Int | Foundation Suit
+data PileName = Tableau Int | Foundation Suit deriving (Eq, Ord, Show)
 
 foundationRules = (
     Take never,

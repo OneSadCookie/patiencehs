@@ -1,11 +1,14 @@
 import Control.Arrow
 import Control.Monad
+import Control.Monad.State
+import qualified Data.Map as Map
 import List
 import Random
 
 --import Action
 import Card
 import Deck
+import Game
 import Hand
 import Layout
 import Patience

@@ -15,7 +15,7 @@ module Card (
 
 data Rank = Ace | Two | Three | Four | Five | Six | Seven |
             Eight | Nine | Ten | Jack | Queen | King
-    deriving (Bounded, Enum, Eq)
+    deriving (Bounded, Enum, Eq, Ord)
 
 instance Show Rank where
     show Ace   = "A"
@@ -31,7 +31,7 @@ ranks = [ minBound .. maxBound ]
 data Color = Red | Black deriving (Eq)
 
 data Suit = Hearts | Clubs | Diamonds | Spades
-    deriving (Bounded, Enum, Eq)
+    deriving (Bounded, Enum, Eq, Ord)
 
 instance Show Suit where
     show Hearts   = "H"
