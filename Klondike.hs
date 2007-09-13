@@ -2,11 +2,7 @@ module Klondike (
     klondike
 ) where
 
-import Action
-import Card
-import Layout
-import Patience
-import Rule
+import Necessities
 
 data PileName = Stock | Waste | Tableau Int | Foundation Int
 
