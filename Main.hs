@@ -3,7 +3,7 @@ import Control.Monad
 import List
 import Random
 
-import Action
+--import Action
 import Card
 import Deck
 import Hand
@@ -13,4 +13,5 @@ import Pile
 import Rule
 import Shuffle
 
-import Klondike
+import BeleagueredCastle
+--import Klondike
