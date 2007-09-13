@@ -1,38 +1,11 @@
---{- GHC_OPTIONS = -fglasgow-exts -}
--- hugs needs command-line arg -98
-
 module Patience (
-    Move (Move, fromPile, toPile, hand),
-    Patience (applyMove, allPileNames, pileNamed, deal, won),
-    allMoves,
-    step
+    DeckFilter,
+    Patience (Patience),
 ) where
 
-import Control.Monad
-import Control.Monad.Reader
-import Random
+import Deck
+import Layout
 
-import Pile
+type DeckFilter = Deck -> Deck
 
-data Move n = Move {
-    fromPile :: n,
-    toPile :: n,
-    hand :: Hand
-}
-
-class Patience p n | p -> n where
-    applyMove :: p -> (Move n) -> p
-    allPileNames :: p -> [ n ]
-    pileNamed :: p -> n -> (Pile n)
-    deal :: StdGen -> p
-    won :: p -> Bool
-
-allMoves :: Patience p n => p -> [ (Move n) ]
-allMoves p = do
-    from <- (allPileNames p)
-    to <- (allPileNames p)
-    let hands = handsFromTo (pileNamed p from) (pileNamed p to)
-    map (Move from to) hands
-
-step :: Patience p n => p -> [p]
-step = map (uncurry applyMove) . liftM2 map (,) allMoves
+data Patience n a = Patience DeckFilter [ PileType n a ]

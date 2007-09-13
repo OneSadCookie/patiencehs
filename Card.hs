@@ -1,86 +1,86 @@
-
 module Card (
+    Rank (Ace, Two, Three, Four, Five, Six, Seven,
+          Eight, Nine, Ten, Jack, Queen, King),
+    ranks,
     Suit (Hearts, Clubs, Diamonds, Spades),
     suits,
-    Rank (Rank),
-    ranks,
-    Face (FaceUp, FaceDown),
-    ace,
-    jack,
-    queen,
-    king,
+    AbstractCard (rank, suit),
+    color,
     Card (Card),
-    rank,
-    suit,
-    black,
-    red,
-    faceUp,
-    faceDown,
-    flipCard,
-    isOneRankHigherThan,
-    isSameSuitAs
+    FacingCard (FaceUp, FaceDown, abstractCard),
+    
+    isAlternatingColors,
+    isDescendingRank,
 ) where
 
-import Utility
-
-data Suit = Hearts | Clubs | Diamonds | Spades
-    deriving (Bounded, Enum, Eq, Ord, Show)
-
-suits :: [ Suit ]
-suits = [ minBound .. ]
-
-newtype Rank = Rank Int deriving (Eq, Ord)
-
-showRank (Rank 1) = "Ace"
-showRank (Rank 11) = "Jack"
-showRank (Rank 12) = "Queen"
-showRank (Rank 13) = "King"
-showRank (Rank n) = (show n)
+data Rank = Ace | Two | Three | Four | Five | Six | Seven |
+            Eight | Nine | Ten | Jack | Queen | King
+    deriving (Bounded, Enum, Eq)
 
 instance Show Rank where
-    show = showRank
-
-instance Enum Rank where
-    fromEnum (Rank n) = n
-    toEnum = Rank
-    enumFrom = enumFromBounded
-    enumFromThen = enumFromThenBounded
-
-instance Bounded Rank where
-    minBound = ace
-    maxBound = king
+    show Ace   = "A"
+    show Ten   = "X"
+    show Jack  = "J"
+    show Queen = "Q"
+    show King  = "K"
+    show r     = show ((fromEnum r) + 1)
 
 ranks :: [ Rank ]
-ranks = [ minBound .. ]
+ranks = [ minBound .. maxBound ]
 
-data Face = FaceUp | FaceDown
+data Color = Red | Black deriving (Eq)
 
-ace = Rank 1
-jack = Rank 11
-queen = Rank 12
-king = Rank 13
+data Suit = Hearts | Clubs | Diamonds | Spades
+    deriving (Bounded, Enum, Eq)
 
-data Card = Card Rank Suit Face
+instance Show Suit where
+    show Hearts   = "H"
+    show Clubs    = "C"
+    show Diamonds = "D"
+    show Spades   = "S"
 
-showCard c@(Card _ _ FaceDown) = "(" ++ (show (flipCard c)) ++ ")"
-showCard (Card r s FaceUp) = (show r) ++ " of " ++ (show s)
+colorOfSuit Hearts   = Red
+colorOfSuit Clubs    = Black
+colorOfSuit Diamonds = Red
+colorOfSuit Spades   = Black
+
+suits :: [ Suit ]
+suits = [ minBound .. maxBound ]
+
+class AbstractCard c where
+    rank :: c -> Rank
+    suit :: c -> Suit
+
+color card = colorOfSuit (suit card)
+
+data Card = Card Rank Suit deriving (Eq)
+
+instance AbstractCard Card where
+    rank (Card r _) = r
+    suit (Card _ s) = s
 
 instance Show Card where
-    show = showCard
+    show (Card r s) = (show r) ++ (show s)
 
-rank (Card r _ _) = r
-suit (Card _ s _) = s
+data FacingCard =
+    FaceUp   { abstractCard :: Card } |
+    FaceDown { abstractCard :: Card }
+    deriving (Eq)
 
-black (Card _ s _) = (s == Clubs || s == Spades)
-red c = not (black c)
+instance AbstractCard FacingCard where
+    rank = rank . abstractCard
+    suit = suit . abstractCard
 
-faceUp (Card _ _ FaceUp) = True
-faceUp (Card _ _ FaceDown) = False
+instance Show FacingCard where
+    show (FaceUp   card) = "[" ++ show card ++ "]"
+    show (FaceDown card) = "(" ++ show card ++ ")"
 
-faceDown = not . faceUp
+isAlternatingColors (c0:cs@(c1:_)) =
+    (color c0) /= (color c1) &&
+    isAlternatingColors cs
+isAlternatingColors _ = True
 
-flipCard (Card r s FaceUp) = Card r s FaceDown
-flipCard (Card r s FaceDown) = Card r s FaceUp
-
-isOneRankHigherThan c0 c1 = (fromEnum (rank c0)) == 1 + (fromEnum (rank c1))
-isSameSuitAs c0 c1 = (suit c0) == (suit c1)
+isDescendingRank (c0:cs@(c1:_)) =
+    fromEnum (rank c0) == fromEnum (rank c1) + 1 &&
+    isDescendingRank cs
+isDescendingRank _ = True

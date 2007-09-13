@@ -3,13 +3,14 @@ import Control.Monad
 import List
 import Random
 
+import Action
 import Card
+import Deck
+import Hand
+import Layout
 import Patience
 import Pile
-import BeleagueredCastle
-import Spider
+import Rule
+import Shuffle
 
-bfs f [] = []
-bfs f l =
-    let l' = concatMap f l
-    in l' ++ (bfs f l')
+import Klondike
