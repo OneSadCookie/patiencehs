@@ -1,5 +1,5 @@
 module Game (
-    deal,
+    begin,
     moves,
     applyMove,
 ) where
@@ -20,18 +20,15 @@ data Game n = Game (Map.Map n (Pile n)) (Map.Map n (Take n, Give n))
 instance Show n => Show (Game n) where
     show (Game pm _) = unlines $ map show $ map snd $ Map.assocs pm
 
-dealPart deck (number, facing) =
-    let (cards, deck') = splitAt number deck
-        part = map facing cards
-    in (deck', part)
+dealPart = flip ($)
 
 dealPile deck (Interact name rules positioning) =
     let (deck', parts) = mapAccumL dealPart deck positioning
         cards = concat parts
     in (deck', (name, (rules, Pile name cards)))
 
-deal :: Ord n => (Patience n a) -> StdGen -> (Game n)
-deal (Patience deckFilter layout) gen =
+begin :: Ord n => (Patience n a) -> StdGen -> (Game n)
+begin (Patience deckFilter layout) gen =
     let d = standardDeck
         fd = deckFilter d
         shuffled = shuffle fd gen

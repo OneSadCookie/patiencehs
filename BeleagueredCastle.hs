@@ -15,17 +15,16 @@ tableauRules = (
     Take singleCardInHand,
     Give (destinationIsEmpty <||> destinationIsRankOverTopOfHand))
 
+foundationLayout suit = Interact
+    (Foundation suit)
+    foundationRules
+    [ place (FaceUp (Card Ace suit)) ]
+
+tableauLayout i = Interact
+    (Tableau i)
+    tableauRules
+    [ deal FaceUp 6 ]
+
 beleagueredCastle = Patience
     (filter ((Ace /=) . rank))
-    [Interact (Foundation Hearts  ) foundationRules [],
-     Interact (Foundation Clubs   ) foundationRules [],
-     Interact (Foundation Diamonds) foundationRules [],
-     Interact (Foundation Spades  ) foundationRules [],
-     Interact (Tableau 0)           tableauRules    [(6, FaceUp)],
-     Interact (Tableau 1)           tableauRules    [(6, FaceUp)],
-     Interact (Tableau 2)           tableauRules    [(6, FaceUp)],
-     Interact (Tableau 3)           tableauRules    [(6, FaceUp)],
-     Interact (Tableau 4)           tableauRules    [(6, FaceUp)],
-     Interact (Tableau 5)           tableauRules    [(6, FaceUp)],
-     Interact (Tableau 6)           tableauRules    [(6, FaceUp)],
-     Interact (Tableau 7)           tableauRules    [(6, FaceUp)]]
+    ((map foundationLayout suits) ++ (map tableauLayout [ 0..7 ]))
