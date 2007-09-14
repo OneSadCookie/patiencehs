@@ -17,3 +17,12 @@ import Shuffle
 
 import BeleagueredCastle
 --import Klondike
+
+go = do
+    gen <- newStdGen
+    let bc = begin beleagueredCastle gen;
+        ms = moves bc;
+        after = map (applyMove bc) ms
+    putStr (show bc)
+    putStrLn (show ms)
+    putStr (show after)
