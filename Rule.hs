@@ -39,8 +39,6 @@ combineRules f rule0 rule1 pile hand = f (rule0 pile hand) (rule1 pile hand)
 data Give name = Give (Rule name)
 data Take name = Take (Rule name)
 
-
-
 combinedRule f (Pile _ (dc:_)) (hc:_) = f dc hc
 combinedRule _ _ _                    = False
 

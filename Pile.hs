@@ -15,7 +15,7 @@ type Hand = [ FacingCard ]
 data Pile name = Pile {
     pileName :: name,
     cards :: [ FacingCard ]
-}
+} deriving (Eq)
 
 instance Show name => Show (Pile name) where
     show (Pile n c) = show n ++ ": " ++ show c
