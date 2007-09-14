@@ -1,9 +1,8 @@
 module Game (
     deal,
     moves,
+    applyMove,
 ) where
-
---import Debug.Trace
 
 import qualified Data.Map as Map
 import List
@@ -63,11 +62,18 @@ movesFromTo game fromName toName =
         hs = hands fromPile
         legalFromHands = filter (fromRule fromPile) hs
         legalToHands = filter (toRule toPile) legalFromHands
-        {- s = (show fromName) ++ ":- " ++ (show legalFromHands) ++ "\n" ++
-            (show toName) ++ ":-" ++ (show legalToHands) ++ "\n--\n" -}
-    in {- trace s $ -} map (Move fromName toName) legalToHands
+    in map (Move fromName toName) legalToHands
 
 moves game = do
     fromName <- pileNames game
     toName <- pileNames game
     movesFromTo game fromName toName
+
+applyMove game@(Game pm rm) (Move fromName toName hand) =
+    let fromPile = pileNamed game fromName
+        toPile = pileNamed game toName
+        fromPile' = takeHand fromPile hand
+        toPile' = giveHand toPile hand
+        pm' = (Map.insert fromName fromPile' pm)
+        pm'' = (Map.insert toName toPile' pm')
+    in Game pm'' rm
