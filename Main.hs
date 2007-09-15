@@ -1,3 +1,7 @@
+module Main (
+    main
+) where
+
 import Control.Arrow
 import Control.Monad
 import Control.Monad.State
@@ -30,7 +34,7 @@ best bpred (first:rest) = first : (best' first bpred rest) where
 betterGame g0 g1 =
     (countCardsUp $ pileCount g0) < (countCardsUp $ pileCount g1)
 
-go = do
+main = do
     gen <- newStdGen
     let bc = begin beleagueredCastle gen
         tree = dfs bc (map (uncurry applyMove) . liftM2 map (,) moves)
