@@ -53,7 +53,7 @@ class AbstractCard c where
 
 color card = colorOfSuit (suit card)
 
-data Card = Card Rank Suit deriving (Eq)
+data Card = Card Rank Suit deriving (Eq, Ord)
 
 instance AbstractCard Card where
     rank (Card r _) = r
@@ -65,7 +65,7 @@ instance Show Card where
 data FacingCard =
     FaceUp   { abstractCard :: Card } |
     FaceDown { abstractCard :: Card }
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 instance AbstractCard FacingCard where
     rank = rank . abstractCard

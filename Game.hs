@@ -21,6 +21,9 @@ data Game n = Game (Map.Map n (Pile n)) (Map.Map n (Take n, Give n))
 instance Eq n => Eq (Game n) where
     (==) (Game pm0 _) (Game pm1 _) = pm0 == pm1
 
+instance Ord n => Ord (Game n) where
+    (<=) (Game pm0 _) (Game pm1 _) = pm0 <= pm1
+
 instance Show n => Show (Game n) where
     show (Game pm _) = unlines $ map show $ map snd $ Map.assocs pm
 
