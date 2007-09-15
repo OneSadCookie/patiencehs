@@ -2,6 +2,7 @@ module Game (
     begin,
     moves,
     applyMove,
+    pileCount,
 ) where
 
 import qualified Data.Map as Map
@@ -47,6 +48,8 @@ pileNamed (Game pm _) n = (Map.!) pm n
 rulesForPileNamed (Game _ rm) n = (Map.!) rm n
 
 piles game = map (pileNamed game) (pileNames game)
+
+pileCount game = zip (pileNames game) (map length $ map cards $ piles game)
 
 data Move n = Move n n Hand
 

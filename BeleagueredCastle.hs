@@ -1,5 +1,6 @@
 module BeleagueredCastle (
-    beleagueredCastle
+    beleagueredCastle,
+    countCardsUp
 ) where
 
 import Necessities
@@ -28,3 +29,8 @@ tableauLayout i = Interact
 beleagueredCastle = Patience
     (filter ((Ace /=) . rank))
     ((map foundationLayout suits) ++ (map tableauLayout [ 0..7 ]))
+
+countCardsUp :: [(PileName, Int)] -> Int
+countCardsUp l = sum (map snd (filter (isFoundation . fst) l)) where
+    isFoundation (Foundation _) = True
+    isFoundation _              = False

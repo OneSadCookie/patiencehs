@@ -20,8 +20,18 @@ import Shuffle
 import BeleagueredCastle
 --import Klondike
 
+best :: (a -> a -> Bool) -> [a] -> [a]
+best bpred (first:rest) = first : (best' first bpred rest) where
+    best' _ _ [] = []
+    best' state bpred (h:t)
+        | state `bpred` h = h : (best' h bpred t)
+        | otherwise       = best' state bpred t
+
+betterGame g0 g1 =
+    (countCardsUp $ pileCount g0) < (countCardsUp $ pileCount g1)
+
 go = do
     gen <- newStdGen
     let bc = begin beleagueredCastle gen
         tree = dfs bc (map (uncurry applyMove) . liftM2 map (,) moves)
-    putStr $ show tree
+    putStr $ show $ best betterGame tree
