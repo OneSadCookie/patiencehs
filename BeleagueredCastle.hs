@@ -1,36 +1,26 @@
 module BeleagueredCastle (
-    beleagueredCastle,
-    countCardsUp
+    BeleagueredCastle (BeleagueredCastle)
 ) where
 
 import Necessities
 
-data PileName = Tableau Int | Foundation Suit deriving (Eq, Ord, Show)
+data BeleagueredCastle = BeleagueredCastle deriving (Eq, Ord)
 
-foundationRules = (
-    Take never,
-    Give (destinationIsRankUnderTopOfHand <&&>
-        destinationIsSameSuitAsTopOfHand))
-
-tableauRules = (
-    Take singleCardInHand,
-    Give (destinationIsEmpty <||> destinationIsRankOverTopOfHand))
-
-foundationLayout suit = Interact
-    (Foundation suit)
-    foundationRules
-    [ place (FaceUp (Card Ace suit)) ]
-
-tableauLayout i = Interact
-    (Tableau i)
-    tableauRules
-    [ deal FaceUp 6 ]
-
-beleagueredCastle = Patience
-    (filter ((Ace /=) . rank))
-    ((map foundationLayout suits) ++ (map tableauLayout [ 0..7 ]))
-
-countCardsUp :: [(PileName, Int)] -> Int
-countCardsUp l = sum (map snd (filter (isFoundation . fst) l)) where
-    isFoundation (Foundation _) = True
-    isFoundation _              = False
+instance Patience BeleagueredCastle where
+    deckFilter = const removeAces
+    
+    pileNames  = const (foundations 4 ++ tableaux 8)
+    
+    layout _ (Foundation i) = [ place $ FaceUp $ Card Ace $ toEnum i ]
+    layout _ (Tableau    _) = [ deal FaceUp 6 ]
+    
+    rules _ (Foundation _) = Interact (
+        Take never,
+        Give (destinationIsRankUnderTopOfHand <&&>
+            destinationIsSameSuitAsTopOfHand))
+    rules _ (Tableau _) = Interact (
+        Take singleCardInHand,
+        Give (destinationIsEmpty <||> destinationIsRankOverTopOfHand))
+    
+    won _ piles = 52 == sum [
+        length pile | (name, pile) <- piles, isFoundation name ]

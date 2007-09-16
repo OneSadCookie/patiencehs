@@ -1,6 +1,10 @@
 module Pile (
     Hand,
-    Pile (Pile, pileName, cards),
+    PileName (Foundation, Stock, Tableau, Waste),
+    isFoundation,
+    foundations,
+    tableaux,
+    Pile,
     hands,
     takeHand,
     giveHand,
@@ -12,16 +16,23 @@ import Card
 
 type Hand = [ FacingCard ]
 
-data Pile name = Pile {
-    pileName :: name,
-    cards :: [ FacingCard ]
-} deriving (Eq, Ord)
+-- these are used for all games, to avoid lots of type parameters everywhere
+data PileName =
+    Foundation Int |
+    Stock |
+    Tableau Int |
+    Waste deriving (Eq, Ord, Show)
 
-instance Show name => Show (Pile name) where
-    show (Pile n c) = show n ++ ": " ++ show c
+isFoundation (Foundation _) = True
+isFoundation _              = False
 
-hands (Pile _ c) = map reverse (inits c)
+foundations n = map Foundation [0..n-1]
+tableaux    n = map Tableau    [0..n-1]
 
-takeHand (Pile n c) h = Pile n (drop (length h) c)
+type Pile = [ FacingCard ]
 
-giveHand (Pile n c) h = Pile n ((reverse h) ++ c)
+hands = map reverse . inits
+
+takeHand = flip (drop . length)
+
+giveHand = flip ((++) . reverse)

@@ -29,65 +29,65 @@ module Rule (
 import Card
 import Pile
 
-type Rule name = (Pile name) -> Hand -> Bool
+type Rule = Pile -> Hand -> Bool
 
 combineRules f rule0 rule1 pile hand = f (rule0 pile hand) (rule1 pile hand)
 
 (<&&>) = combineRules (&&)
 (<||>) = combineRules (||)
 
-data Give name = Give (Rule name)
-data Take name = Take (Rule name)
+data Give = Give Rule
+data Take = Take Rule
 
-combinedRule f (Pile _ (dc:_)) (hc:_) = f dc hc
-combinedRule _ _ _                    = False
+combinedRule f (dc:_) (hc:_) = f dc hc
+combinedRule _ _ _           = False
 
 
 
 -- generic rules
 
-never :: Rule n
+never :: Rule
 never _ _ = False
 
-always :: Rule n
+always :: Rule
 always _ _ = True
 
 -- hand rules
 
-singleCardInHand :: Rule n
+singleCardInHand :: Rule
 singleCardInHand _ [c] = True
 singleCardInHand _ _ = False
 
-handIsAlternatingColors :: Rule n
+handIsAlternatingColors :: Rule
 handIsAlternatingColors _ = isAlternatingColors
 
-topOfHandIsRank :: Rank -> Rule n
+topOfHandIsRank :: Rank -> Rule
 topOfHandIsRank r _ (c:_) = ((rank c) == r)
 topOfHandIsRank r _ _ = False
 
-handIsDescendingRank :: Rule n
+handIsDescendingRank :: Rule
 handIsDescendingRank _ = isDescendingRank
 
 -- destination rules
 
-destinationIsEmpty :: Rule n
-destinationIsEmpty (Pile _ []) _ = True
-destinationIsEmpty _ _ = False
+destinationIsEmpty :: Rule
+destinationIsEmpty [] _ = True
+destinationIsEmpty _  _ = False
 
 -- hand + destination rules
 
-destinationIsRankOverTopOfHand :: Rule n
+destinationIsRankOverTopOfHand :: Rule
 destinationIsRankOverTopOfHand = combinedRule (\dc hc ->
     fromEnum (rank dc) == fromEnum (rank hc) + 1)
 
-destinationIsRankUnderTopOfHand :: Rule n
+destinationIsRankUnderTopOfHand :: Rule
 destinationIsRankUnderTopOfHand = combinedRule (\dc hc ->
     fromEnum (rank dc) == fromEnum (rank hc) - 1)
 
-destinationIsDifferentColorFromTopOfHand :: Rule n
+destinationIsDifferentColorFromTopOfHand :: Rule
 destinationIsDifferentColorFromTopOfHand = combinedRule (\dc hc ->
     (color dc) /= (color hc))
 
-destinationIsSameSuitAsTopOfHand :: Rule n
+destinationIsSameSuitAsTopOfHand :: Rule
 destinationIsSameSuitAsTopOfHand = combinedRule (\dc hc ->
     (suit dc) == (suit hc))
