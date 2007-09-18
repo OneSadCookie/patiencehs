@@ -1,8 +1,8 @@
 all: patience
 
-patience: $(shell ls *.hs)
+patience: $(shell find Source -name '*.hs')
 	mkdir -p Build
-	ghc -O --make Main -odir Build -hidir Build -o patience
+	ghc -O --make Source/CommandLine/Main.hs -iSource/Common -odir Build -hidir Build -o patience
 
 clean:
 	rm -rf Build
