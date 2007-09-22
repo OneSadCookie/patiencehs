@@ -2,6 +2,7 @@ module Pile (
     Hand,
     PileName (Foundation, Stock, Tableau, Waste),
     isFoundation,
+    isTableau,
     foundations,
     tableaux,
     Pile,
@@ -26,12 +27,16 @@ data PileName =
 isFoundation (Foundation _) = True
 isFoundation _              = False
 
+isTableau (Tableau _) = True
+isTableau _           = False
+
 foundations n = map Foundation [0..n-1]
 tableaux    n = map Tableau    [0..n-1]
 
 type Pile = [ FacingCard ]
 
-hands = map reverse . inits
+--hands = map reverse . inits
+hands = reverse . tails . reverse -- this is like 10x faster
 
 takeHand = flip (drop . length)
 

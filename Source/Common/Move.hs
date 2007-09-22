@@ -26,14 +26,13 @@ movesFromTo rules piles fromName toName =
         Interact (Take fromRule, _) = rules fromName
         Interact (_, Give toRule) = rules toName
         hs = hands fromPile
-        legalFromHands = filter (fromRule fromPile) hs
-        legalToHands = filter (toRule toPile) legalFromHands
-    in map (Move fromName toName) legalToHands
+        legalHands = filter legalHand hs where
+            legalHand h = (fromRule fromPile h) && (toRule toPile h)
+    in map (Move fromName toName) legalHands
 
-allMoves rules piles = do
-    let names = Map.keys piles
-    fromName <- names
-    toName <- names
+allMoves rules fromPiles toPiles piles = do
+    fromName <- fromPiles $ Map.assocs piles
+    toName <- toPiles $ Map.assocs piles
     movesFromTo rules piles fromName toName
 
 applyMove p piles (Move fromName toName hand) =
@@ -45,7 +44,13 @@ applyMove p piles (Move fromName toName hand) =
         piles'' = Map.insert toName toPile' piles'
     in piles''
 
-ruleMoves :: Patience p => (p -> PileName -> PileType) -> p -> [ (PileName, Pile) ] -> [ [ (PileName, Pile) ] ]
-ruleMoves rules p piles =
+ruleMoves :: Patience p =>
+    (p -> PileName -> PileType) ->
+    ([ (PileName, Pile) ] -> [ PileName ]) ->
+    ([ (PileName, Pile) ] -> [ PileName ]) ->
+    p ->
+    [ (PileName, Pile) ] ->
+    [ [ (PileName, Pile) ] ]
+ruleMoves rules fromPiles toPiles p piles =
     let pileMap = Map.fromList piles
-    in map Map.assocs $ map (applyMove p pileMap) (allMoves (rules p) pileMap)
+    in map Map.assocs $ map (applyMove p pileMap) (allMoves (rules p) fromPiles toPiles pileMap)

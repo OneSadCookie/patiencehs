@@ -1,22 +1,32 @@
 module Search (
-    dfs,
+    bfs,
 ) where
 
 import qualified Data.Set as Set
-import Data.Sequence
 
-push es e = e <| es
-pop seq = case viewr seq of es :> e -> (es, e)
+data Queue a = Queue [a] [a]
 
-pushMany = (. fromList) . (><)
+emptyQueue = Queue [] []
 
-dfs :: (Eq a, Ord a) => a -> (a -> [a]) -> [a]
-dfs start kids = dfs' Set.empty (singleton start) kids where
-    dfs' seen fringe kids
-        | Data.Sequence.null fringe = []
-        | otherwise                 =
-            let (fringe', e) = pop fringe
+isEmptyQueue (Queue [] []) = True
+isEmptyQueue _             = False
+
+enqueue (Queue front back) e = Queue front (e:back)
+
+enqueueMany (Queue front back) l = (Queue front (l ++ back))
+
+dequeue (Queue [] []) = error "Dequeue from empty queue"
+dequeue (Queue [] back) = dequeue $ Queue (reverse back) []
+dequeue (Queue (e:front) back) = (Queue front back, e)
+
+bfs :: Ord a => a -> (a -> [a]) -> [a]
+bfs start kids = bfs' Set.empty (enqueue emptyQueue start) kids where
+    bfs' seen fringe kids
+        | isEmptyQueue fringe = []
+        | otherwise           =
+            let (fringe', e) = dequeue fringe
                 newKids = kids e
-                newKids' = filter ((flip Set.notMember) seen) newKids
-                fringe'' = pushMany fringe' newKids'
-            in e : (dfs' (Set.insert e seen) fringe'' kids)
+                fringe'' = enqueueMany fringe' newKids
+            in  if e `Set.member` seen
+                then bfs' seen fringe' kids
+                else e : (bfs' (Set.insert e seen) fringe'' kids)

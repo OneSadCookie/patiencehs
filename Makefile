@@ -1,20 +1,30 @@
 RELEASE := 0
 
+ifeq ($(PROFILE),1)
+	HS_PFLAGS := -prof -auto-all
+	SUFFIX := -profile
+	BUILD := Build/Profile
+else
+	HS_PFLAGS := 
+	SUFFIX := 
+	BUILD := Build
+endif
+
 ifeq ($(RELEASE),1)
 	HS_OFLAGS := -O2
 	HS_LFLAGS := -optl-dead_strip
-	SUFFIX :=
-	BUILD := Build/Release
+	SUFFIX := $(SUFFIX)
+	BUILD := $(BUILD)/Release
 else
-	HS_OFLAGS :=
-	HS_LFLAGS :=
-	SUFFIX := -debug
-	BUILD := Build/Debug
+	HS_OFLAGS := 
+	HS_LFLAGS := 
+	SUFFIX := $(SUFFIX)-debug
+	BUILD := $(BUILD)/Debug
 endif	
 
 HSFILES := $(shell find Source -name '*.hs')
 HS_CFLAGS := --make -iSource/Common
-HSFLAGS := $(HS_OFLAGS) $(HS_CFLAGS) $(HS_LFLAGS)
+HSFLAGS := $(HS_OFLAGS) $(HS_CFLAGS) $(HS_LFLAGS) $(HS_PFLAGS)
 
 PATIENCE := patience$(SUFFIX)
 GTK_PATIENCE := gtk-patience$(SUFFIX)
