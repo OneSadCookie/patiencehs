@@ -1,8 +1,7 @@
 module Game (
     Game (Game),
     begin,
-    moves,
-    applyMove,
+    nextPositions,
     wonGame,
 ) where
 
@@ -17,10 +16,10 @@ import Pile
 import Rule
 import Shuffle
 
-data Game p = Game p (Map.Map PileName Pile) deriving (Eq, Ord)
+data Game p = Game p [ (PileName, Pile) ] deriving (Eq, Ord)
 
 instance Show (Game p) where
-    show (Game _ m) = unlines $ map showPile $ Map.assocs m where
+    show (Game _ ps) = unlines $ map showPile $ ps where
         showPile (name, cards) = show name ++ ": " ++ show cards
 
 dealPart = flip ($)
@@ -33,36 +32,8 @@ dealPile p deck name =
 begin p gen = 
     let d = shuffle (deckFilter p standardDeck) gen
         piles = snd $ mapAccumL (dealPile p) d (pileNames p)
-    in Game p (Map.fromList piles)
+    in Game p piles
 
-data Move = Move PileName PileName Hand
+nextPositions (Game p piles) = map (Game p) (moves p piles)
 
-instance Show Move where
-    show (Move f t h) =
-        "move " ++ show h ++ " from " ++ show f ++ " to " ++ show t
-
-movesFromTo (Game p piles) fromName toName =
-    let fromPile = piles ! fromName
-        toPile = piles ! toName
-        Interact (Take fromRule, _) = rules p fromName
-        Interact (_, Give toRule) = rules p toName
-        hs = hands fromPile
-        legalFromHands = filter (fromRule fromPile) hs
-        legalToHands = filter (toRule toPile) legalFromHands
-    in map (Move fromName toName) legalToHands
-
-moves game@(Game p _) = do
-    fromName <- pileNames p
-    toName <- pileNames p
-    movesFromTo game fromName toName
-
-applyMove game@(Game p piles) (Move fromName toName hand) =
-    let fromPile = piles ! fromName
-        toPile = piles ! toName
-        fromPile' = takeHand fromPile hand
-        toPile' = giveHand toPile hand
-        piles' = Map.insert fromName fromPile' piles
-        piles'' = Map.insert toName toPile' piles'
-    in Game p piles''
-
-wonGame (Game p piles) = won p (Map.assocs piles)
+wonGame (Game p piles) = won p piles

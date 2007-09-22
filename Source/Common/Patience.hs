@@ -1,6 +1,5 @@
 module Patience (
-    PileType ({- Act, -} Interact),
-    Patience (deckFilter, pileNames, layout, rules, won),
+    Patience (deckFilter, pileNames, layout, moves, won),
 ) where
 
 import Deck
@@ -8,13 +7,9 @@ import Layout
 import Pile
 import Rule
 
-data PileType =
-    Interact (Take, Give) -- |
-    -- Act .........
-
 class Patience p where
     deckFilter :: p -> Deck -> Deck
     pileNames  :: p -> [ PileName ]
     layout     :: p -> PileName -> [ DealRule ]
-    rules      :: p -> PileName -> PileType
+    moves      :: p -> [ (PileName, Pile) ] -> [ [ (PileName, Pile) ] ]
     won        :: p -> [ (PileName, Pile) ] -> Bool
