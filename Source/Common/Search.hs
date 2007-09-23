@@ -3,6 +3,7 @@ module Search (
     dfs,
 ) where
 
+import Control.Parallel.Strategies
 import qualified Data.Set as Set
 
 data Queue a = Queue [a] [a]
@@ -55,21 +56,19 @@ instance Fringe Stack where
     addMany = pushMany
     remove = pop
 
-search :: (Ord a, Fringe f) => f a -> a -> (a -> [a]) -> [a]
+search :: (NFData a, Ord a, Fringe f) => f a -> a -> (a -> [a]) -> [a]
 search emptyFringe start kids =
     search' Set.empty (add emptyFringe start) kids where
         search' seen fringe kids
             | isEmptyFringe fringe = []
             | otherwise           =
                 let (fringe', e) = remove fringe
-                    newKids = kids e
+                    newKids = force $ filter (not .  (`Set.member` seen)) (kids e)
                     fringe'' = addMany fringe' newKids
-                in  if e `Set.member` seen
-                    then search' seen fringe' kids
-                    else e : (search' (Set.insert e seen) fringe'' kids)
+                in e : (search' (Set.insert e seen) fringe'' kids)
 
-bfs :: Ord a => a -> (a -> [a]) -> [a]
+bfs :: (NFData a, Ord a) => a -> (a -> [a]) -> [a]
 bfs = search emptyQueue
 
-dfs :: Ord a => a -> (a -> [a]) -> [a]
+dfs :: (NFData a, Ord a) => a -> (a -> [a]) -> [a]
 dfs = search emptyStack

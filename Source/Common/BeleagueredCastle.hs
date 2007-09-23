@@ -2,9 +2,12 @@ module BeleagueredCastle (
     BeleagueredCastle (BeleagueredCastle)
 ) where
 
+import Control.Parallel.Strategies
 import Necessities
 
 data BeleagueredCastle = BeleagueredCastle deriving (Eq, Ord)
+
+instance NFData BeleagueredCastle
 
 instance Patience BeleagueredCastle where
     deckFilter = const removeAces

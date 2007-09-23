@@ -11,6 +11,7 @@ module Pile (
     giveHand,
 ) where
 
+import Control.Parallel.Strategies
 import Data.List
 
 import Card
@@ -23,6 +24,8 @@ data PileName =
     Stock |
     Tableau Int |
     Waste deriving (Eq, Ord, Show)
+
+instance NFData PileName
 
 isFoundation (Foundation _) = True
 isFoundation _              = False

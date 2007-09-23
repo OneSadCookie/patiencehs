@@ -5,6 +5,7 @@ module Game (
     wonGame,
 ) where
 
+import Control.Parallel.Strategies
 import Data.List
 import qualified Data.Map as Map
 import Data.Map ((!))
@@ -17,6 +18,9 @@ import Rule
 import Shuffle
 
 data Game p = Game p [ (PileName, Pile) ] deriving (Eq, Ord)
+
+instance NFData p => NFData (Game p) where
+    rnf (Game p piles) = rnf p `seq` rnf piles
 
 instance Show (Game p) where
     show (Game _ ps) = unlines $ map showPile $ ps where

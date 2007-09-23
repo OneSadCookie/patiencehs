@@ -13,6 +13,8 @@ module Card (
     isDescendingRank,
 ) where
 
+import Control.Parallel.Strategies
+
 data Rank = Ace | Two | Three | Four | Five | Six | Seven |
             Eight | Nine | Ten | Jack | Queen | King
     deriving (Bounded, Enum, Eq, Ord)
@@ -24,6 +26,8 @@ instance Show Rank where
     show Queen = "Q"
     show King  = "K"
     show r     = show ((fromEnum r) + 1)
+
+instance NFData Rank
 
 ranks :: [ Rank ]
 ranks = [ minBound .. maxBound ]
@@ -38,6 +42,8 @@ instance Show Suit where
     show Clubs    = "C"
     show Diamonds = "D"
     show Spades   = "S"
+
+instance NFData Suit
 
 colorOfSuit Hearts   = Red
 colorOfSuit Clubs    = Black
@@ -62,6 +68,9 @@ instance AbstractCard Card where
 instance Show Card where
     show (Card r s) = (show r) ++ (show s)
 
+instance NFData Card where
+    rnf (Card r s) = rnf r `seq` rnf s
+
 data FacingCard =
     FaceUp   { abstractCard :: Card } |
     FaceDown { abstractCard :: Card }
@@ -74,6 +83,10 @@ instance AbstractCard FacingCard where
 instance Show FacingCard where
     show (FaceUp   card) = "|" ++ show card ++ "|"
     show (FaceDown card) = "<" ++ show card ++ ">"
+
+instance NFData FacingCard where
+    rnf (FaceUp   card) = rnf card
+    rnf (FaceDown card) = rnf card
 
 isAlternatingColors (c0:cs@(c1:_)) =
     (color c0) /= (color c1) &&
