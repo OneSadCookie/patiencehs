@@ -28,7 +28,7 @@ instance Patience Spider where
     layout Spiderette (Tableau i) = [ deal FaceDown (i - 1), deal FaceUp 1 ]
     layout Spiderette Stock = [ deal FaceDown 24 ]
     
-    moves s p = (ruleMoves rules fromPiles toPiles s p) ++ [ dealFromStock p ] where
+    moves s p = map (map turnUpBottomTableauCard) $ (ruleMoves rules fromPiles toPiles s p) ++ [ dealFromStock p ] where
         rules _ (Foundation _) = Interact (
             Take never,
             Give (destinationIsEmpty <&&> handIsDescendingFullSuit))
@@ -48,6 +48,10 @@ instance Patience Spider where
                 pileMap' = snd $ Map.mapAccumWithKey dealOneToTableau cards pileMap
                 pileMap'' = Map.insert Stock stock' pileMap'
             in Map.assocs pileMap''
+        turnUpBottomTableauCard (name@(Tableau _), pile) = (name, turnUpBottomCard pile) where
+            turnUpBottomCard [] = []
+            turnUpBottomCard (h:t) = (turnUp h):t
+        turnUpBottomTableauCard p = p
     
     won Spider     = wonIfFoundationCountIs 104
     won Spiderette = wonIfFoundationCountIs 52
