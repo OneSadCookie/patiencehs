@@ -33,7 +33,7 @@ instance Patience Spider where
             Take never,
             Give (destinationIsEmpty <&&> handIsDescendingFullSuit))
         rules _ (Tableau _) = Interact (
-            Take handIsDescendingInSuit,
+            Take (handIsDescendingInSuit <&&> handIsAllFaceUp),
             Give (destinationIsEmpty <||> destinationIsRankOverTopOfHand))
         rules _ Stock = Interact (Take never, Give never)
         fromPiles piles = filter isTableau $ map fst piles

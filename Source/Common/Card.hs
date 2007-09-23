@@ -8,6 +8,7 @@ module Card (
     color,
     Card (Card),
     FacingCard (FaceUp, FaceDown, abstractCard),
+    isFaceUp,
     turnUp,
 ) where
 
@@ -85,6 +86,9 @@ instance Show FacingCard where
 instance NFData FacingCard where
     rnf (FaceUp   card) = rnf card
     rnf (FaceDown card) = rnf card
+
+isFaceUp (FaceUp _) = True
+isFaceUp _          = False
 
 turnUp (FaceDown card) = FaceUp card
 turnUp c = c

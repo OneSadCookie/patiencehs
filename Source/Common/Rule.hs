@@ -17,6 +17,7 @@ module Rule (
     handIsDescendingRank,
     handIsDescendingInSuit,
     handIsDescendingFullSuit,
+    handIsAllFaceUp,
     
     -- destination rules
     destinationIsEmpty,
@@ -92,6 +93,8 @@ handIsDescendingInSuit _ = liftM2 (&&) isDescendingRank isConsistentSuit
 handIsDescendingFullSuit :: Rule
 handIsDescendingFullSuit _ [] = False
 handIsDescendingFullSuit p h@(k:_) = ((rank k) == King) && (length h == 13) && (handIsDescendingInSuit p h)
+
+handIsAllFaceUp _ = all isFaceUp
 
 -- destination rules
 
