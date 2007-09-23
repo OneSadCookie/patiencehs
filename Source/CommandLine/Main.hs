@@ -41,7 +41,7 @@ betterGame (Game _ piles0) (Game _ piles1) =
 main = do
     gen <- newStdGen
     let bc = begin BeleagueredCastle gen
-        tree = bfs bc nextPositions
+        tree = dfs bc nextPositions
     putStr $ show $ best betterGame $ takeWhile (not . wonGame) tree
 
 --main = do

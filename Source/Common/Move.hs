@@ -30,10 +30,10 @@ movesFromTo rules piles fromName toName =
             legalHand h = (fromRule fromPile h) && (toRule toPile h)
     in map (Move fromName toName) legalHands
 
-allMoves rules fromPiles toPiles piles = do
-    fromName <- fromPiles $ Map.assocs piles
-    toName <- toPiles $ Map.assocs piles
-    movesFromTo rules piles fromName toName
+allMoves rules fromPiles toPiles piles pileMap = do
+    fromName <- fromPiles piles
+    toName <- toPiles piles
+    movesFromTo rules pileMap fromName toName
 
 applyMove p piles (Move fromName toName hand) =
     let fromPile = piles ! fromName
@@ -53,4 +53,4 @@ ruleMoves :: Patience p =>
     [ [ (PileName, Pile) ] ]
 ruleMoves rules fromPiles toPiles p piles =
     let pileMap = Map.fromList piles
-    in map Map.assocs $ map (applyMove p pileMap) (allMoves (rules p) fromPiles toPiles pileMap)
+    in map Map.assocs $ map (applyMove p pileMap) (allMoves (rules p) fromPiles toPiles piles pileMap)

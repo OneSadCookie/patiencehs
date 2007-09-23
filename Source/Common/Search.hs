@@ -1,5 +1,6 @@
 module Search (
     bfs,
+    dfs,
 ) where
 
 import qualified Data.Set as Set
@@ -13,20 +14,62 @@ isEmptyQueue _             = False
 
 enqueue (Queue front back) e = Queue front (e:back)
 
-enqueueMany (Queue front back) l = (Queue front (l ++ back))
+enqueueMany (Queue front back) l = (Queue front (reverse l ++ back))
 
 dequeue (Queue [] []) = error "Dequeue from empty queue"
 dequeue (Queue [] back) = dequeue $ Queue (reverse back) []
 dequeue (Queue (e:front) back) = (Queue front back, e)
 
+data Stack a = Stack [a]
+
+emptyStack = Stack []
+
+isEmptyStack (Stack []) = True
+isEmptyStack _          = False
+
+push (Stack es) e = Stack (e:es)
+
+pushMany (Stack es) l = Stack (l ++ es)
+
+pop (Stack []) = error "Pop from empty stack"
+pop (Stack (e:es)) = (Stack es, e)
+
+class Fringe f where
+    emptyFringe :: f a
+    isEmptyFringe :: f a -> Bool
+    add :: f a -> a -> f a
+    addMany :: f a -> [a] -> f a
+    remove :: f a -> (f a, a)
+
+instance Fringe Queue where
+    emptyFringe = emptyQueue
+    isEmptyFringe = isEmptyQueue
+    add = enqueue
+    addMany = enqueueMany
+    remove = dequeue
+
+instance Fringe Stack where
+    emptyFringe = emptyStack
+    isEmptyFringe = isEmptyStack
+    add = push
+    addMany = pushMany
+    remove = pop
+
+search :: (Ord a, Fringe f) => f a -> a -> (a -> [a]) -> [a]
+search emptyFringe start kids =
+    search' Set.empty (add emptyFringe start) kids where
+        search' seen fringe kids
+            | isEmptyFringe fringe = []
+            | otherwise           =
+                let (fringe', e) = remove fringe
+                    newKids = kids e
+                    fringe'' = addMany fringe' newKids
+                in  if e `Set.member` seen
+                    then search' seen fringe' kids
+                    else e : (search' (Set.insert e seen) fringe'' kids)
+
 bfs :: Ord a => a -> (a -> [a]) -> [a]
-bfs start kids = bfs' Set.empty (enqueue emptyQueue start) kids where
-    bfs' seen fringe kids
-        | isEmptyQueue fringe = []
-        | otherwise           =
-            let (fringe', e) = dequeue fringe
-                newKids = kids e
-                fringe'' = enqueueMany fringe' newKids
-            in  if e `Set.member` seen
-                then bfs' seen fringe' kids
-                else e : (bfs' (Set.insert e seen) fringe'' kids)
+bfs = search emptyQueue
+
+dfs :: Ord a => a -> (a -> [a]) -> [a]
+dfs = search emptyStack
