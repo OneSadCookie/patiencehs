@@ -15,6 +15,8 @@ module Rule (
     handIsAlternatingColors,
     topOfHandIsRank,
     handIsDescendingRank,
+    handIsDescendingInSuit,
+    handIsDescendingFullSuit,
     
     -- destination rules
     destinationIsEmpty,
@@ -25,6 +27,9 @@ module Rule (
     destinationIsDifferentColorFromTopOfHand,
     destinationIsSameSuitAsTopOfHand,
 ) where
+
+import Control.Arrow
+import Control.Monad
 
 import Card
 import Pile
@@ -42,6 +47,19 @@ data Take = Take Rule
 combinedRule f (dc:_) (hc:_) = f dc hc
 combinedRule _ _ _           = False
 
+
+-- helpers
+
+-- in GHC 6.8, but not 6.6 apparently
+on g f x y = f x `g` f y
+
+allPairs f cards = and $ zipWith f cards (tail cards)
+
+isAlternatingColors = allPairs $ (/=) `on` color
+
+isDescendingRank = allPairs $ (\a b -> fromEnum a == fromEnum b + 1) `on` rank
+
+isConsistentSuit = allPairs $ (==) `on` suit
 
 
 -- generic rules
@@ -67,6 +85,13 @@ topOfHandIsRank r _ _ = False
 
 handIsDescendingRank :: Rule
 handIsDescendingRank _ = isDescendingRank
+
+handIsDescendingInSuit :: Rule
+handIsDescendingInSuit _ = liftM2 (&&) isDescendingRank isConsistentSuit
+
+handIsDescendingFullSuit :: Rule
+handIsDescendingFullSuit _ [] = False
+handIsDescendingFullSuit p h@(k:_) = ((rank k) == King) && (length h == 13) && (handIsDescendingInSuit p h)
 
 -- destination rules
 

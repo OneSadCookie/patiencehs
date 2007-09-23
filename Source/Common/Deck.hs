@@ -1,7 +1,10 @@
 module Deck (
     Deck,
     standardDeck,
+    
+    -- filters
     removeAces,
+    doubleDeck,
 ) where
 
 import Card
@@ -15,3 +18,6 @@ standardDeck = do
 
 removeAces :: Deck -> Deck
 removeAces = filter ((Ace /=) . rank)
+
+doubleDeck :: Deck -> Deck
+doubleDeck d = d ++ d

@@ -1,5 +1,5 @@
 module BeleagueredCastle (
-    BeleagueredCastle (BeleagueredCastle)
+    beleagueredCastle
 ) where
 
 import Control.Parallel.Strategies
@@ -26,9 +26,8 @@ instance Patience BeleagueredCastle where
             Take singleCardInHand,
             Give (destinationIsEmpty <||> destinationIsRankOverTopOfHand))
         fromPiles piles = filter isTableau $ map fst piles
-        toPiles [] = []
-        toPiles ((name, []):piles) = name : (map fst $ filter ((0 /=) . length . snd) piles)
-        toPiles ((name, _):piles) = name : toPiles piles
+        toPiles = onlyOneEmptyTableau
     
-    won _ piles = 52 == sum [
-        length pile | (name, pile) <- piles, isFoundation name ]
+    won = const (wonIfFoundationCountIs 52)
+
+beleagueredCastle = BeleagueredCastle

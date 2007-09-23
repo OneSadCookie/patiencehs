@@ -31,7 +31,7 @@ dealPart = flip ($)
 dealPile p deck name =
     let l = layout p name
         (deck', parts) = mapAccumL dealPart deck l
-    in (deck', (name, concat parts))
+    in (deck', (name, concat $ reverse parts))
 
 begin p gen = 
     let d = shuffle (deckFilter p standardDeck) gen

@@ -9,6 +9,8 @@ module Pile (
     hands,
     takeHand,
     giveHand,
+    countFoundationCards,
+    onlyOneEmptyTableau,
 ) where
 
 import Control.Parallel.Strategies
@@ -44,3 +46,16 @@ hands = reverse . tails . reverse -- this is like 10x faster
 takeHand = flip (drop . length)
 
 giveHand = flip ((++) . reverse)
+
+countFoundationCards :: [ (PileName, Pile) ] -> Int
+countFoundationCards piles = sum [
+    length pile | (name, pile) <- piles, isFoundation name ]
+
+noEmptyTableaux [] = []
+noEmptyTableaux ((Tableau _, _):piles) = noEmptyTableaux piles
+noEmptyTableaux ((name, _):piles) = name : noEmptyTableaux piles
+
+onlyOneEmptyTableau [] = []
+onlyOneEmptyTableau ((name@(Tableau _), []):piles) =
+    name : noEmptyTableaux piles
+onlyOneEmptyTableau ((name, _):piles) = name : onlyOneEmptyTableau piles

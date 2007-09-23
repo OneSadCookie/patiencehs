@@ -23,6 +23,7 @@ import Search
 import Shuffle
 
 import BeleagueredCastle
+import Spider
 
 best :: (a -> a -> Bool) -> [a] -> [a]
 best bpred (first:rest) = first : (best' first bpred rest) where
@@ -40,9 +41,9 @@ betterGame (Game _ piles0) (Game _ piles1) =
 
 main = do
     gen <- newStdGen
-    let bc = begin BeleagueredCastle gen
+    let bc = begin spider gen
         tree = dfs bc nextPositions
-    putStr $ show $ best betterGame $ takeWhile (not . wonGame) tree
+    putStr $ show {- $ best betterGame -} $ takeWhile (not . wonGame) tree
 
 --main = do
 --    gen <- newStdGen

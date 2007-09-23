@@ -1,5 +1,6 @@
 module Patience (
     Patience (deckFilter, pileNames, layout, moves, won),
+    wonIfFoundationCountIs,
 ) where
 
 import Deck
@@ -13,3 +14,5 @@ class Patience p where
     layout     :: p -> PileName -> [ DealRule ]
     moves      :: p -> [ (PileName, Pile) ] -> [ [ (PileName, Pile) ] ]
     won        :: p -> [ (PileName, Pile) ] -> Bool
+
+wonIfFoundationCountIs n = ((n ==) . countFoundationCards)

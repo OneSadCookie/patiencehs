@@ -8,9 +8,7 @@ module Card (
     color,
     Card (Card),
     FacingCard (FaceUp, FaceDown, abstractCard),
-    
-    isAlternatingColors,
-    isDescendingRank,
+    turnUp,
 ) where
 
 import Control.Parallel.Strategies
@@ -88,12 +86,5 @@ instance NFData FacingCard where
     rnf (FaceUp   card) = rnf card
     rnf (FaceDown card) = rnf card
 
-isAlternatingColors (c0:cs@(c1:_)) =
-    (color c0) /= (color c1) &&
-    isAlternatingColors cs
-isAlternatingColors _ = True
-
-isDescendingRank (c0:cs@(c1:_)) =
-    fromEnum (rank c0) == fromEnum (rank c1) + 1 &&
-    isDescendingRank cs
-isDescendingRank _ = True
+turnUp (FaceDown card) = FaceUp card
+turnUp c = c
