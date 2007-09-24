@@ -43,7 +43,7 @@ main = do
     gen <- newStdGen
     let bc = begin spiderette gen
         tree = dfs bc nextPositions
-    putStr $ show $ last {- $ best betterGame -} $ takeWhile (not . wonGame) tree
+    putStr $ show {- $ best betterGame -} $ takeWhile (not . wonGame) tree
 
 --main = do
 --    gen <- newStdGen
