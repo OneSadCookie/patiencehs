@@ -63,7 +63,7 @@ search emptyFringe start kids =
             | isEmptyFringe fringe = []
             | otherwise           =
                 let (fringe', e) = remove fringe
-                    newKids = force $ filter (not .  (`Set.member` seen)) (kids e)
+                    newKids = force $ filter (not . (`Set.member` seen)) (kids e)
                     fringe'' = addMany fringe' newKids
                 in e : (search' (Set.insert e seen) fringe'' kids)
 
