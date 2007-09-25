@@ -2,32 +2,50 @@ module BeleagueredCastle (
     beleagueredCastle
 ) where
 
-import Control.Parallel.Strategies
 import Necessities
 
-data BeleagueredCastle = BeleagueredCastle deriving (Eq, Ord)
+data BeleagueredCastle = BeleagueredCastle PileMap deriving (Eq, Ord)
 
+-- this isn't nearly correct, but there's no default NFData for PileMap
+--     and for my usage, it shouldn't matter...
 instance NFData BeleagueredCastle
 
-instance Patience BeleagueredCastle where
-    deckFilter = const removeAces
-    
-    pileNames  = const (foundations 4 ++ tableaux 8)
-    
-    layout _ (Foundation i) = [ place $ FaceUp $ Card Ace $ toEnum i ]
-    layout _ (Tableau    _) = [ deal FaceUp 6 ]
-    
-    moves = ruleMoves rules fromPiles toPiles where
-        rules _ (Foundation _) = Interact (
-            Take never,
-            Give (destinationIsRankUnderTopOfHand <&&>
-                  destinationIsSameSuitAsTopOfHand))
-        rules _ (Tableau _) = Interact (
-            Take singleCardInHand,
-            Give (destinationIsEmpty <||> destinationIsRankOverTopOfHand))
-        fromPiles piles = filter isTableau $ map fst piles
-        toPiles = onlyOneEmptyTableau
-    
-    won = const (wonIfFoundationCountIs 52)
+instance Show BeleagueredCastle where
+    show (BeleagueredCastle m) = showPileMap m
 
-beleagueredCastle = BeleagueredCastle
+foundationNames = foundations 4
+
+tableauxNames = tableaux 8
+
+names = foundationNames ++ tableauxNames
+
+instance PilePatience BeleagueredCastle where
+    pileNames = const names
+    
+    pileMap (BeleagueredCastle m) = m
+
+instance MovePatience BeleagueredCastle where
+    -- takeRule _ (Foundation _) = never
+    takeRule _ (Tableau _) = singleCardInHand
+    
+    giveRule _ (Foundation _) =
+        destinationIsRankUnderTopOfHand <&&>
+        destinationIsSameSuitAsTopOfHand
+    giveRule _ (Tableau _) =
+        destinationIsEmpty <||> destinationIsRankOverTopOfHand
+    
+    applyMove (BeleagueredCastle m) v = BeleagueredCastle (applyMoveToMap m v)
+    
+    fromPiles = const tableauxNames
+    
+    toPiles = onlyOneEmptyTableau
+
+instance Patience BeleagueredCastle where
+    successors = defaultSuccessors
+    
+    won = wonIfFoundationCountIs 52
+
+layout (Foundation i) = [ place $ FaceUp $ Card Ace $ toEnum i ]
+layout (Tableau    _) = [ deal FaceUp 6 ]
+
+beleagueredCastle = BeleagueredCastle . defaultBegin layout removeAces names

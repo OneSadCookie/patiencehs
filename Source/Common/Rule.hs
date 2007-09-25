@@ -3,8 +3,6 @@ module Rule (
     combineRules,
     (<&&>),
     (<||>),
-    Give (Give),
-    Take (Take),
     
     -- general rules
     never,
@@ -33,6 +31,7 @@ import Control.Arrow
 import Control.Monad
 
 import Card
+import Helpers
 import Pile
 
 type Rule = Pile -> Hand -> Bool
@@ -42,17 +41,11 @@ combineRules f rule0 rule1 pile hand = f (rule0 pile hand) (rule1 pile hand)
 (<&&>) = combineRules (&&)
 (<||>) = combineRules (||)
 
-data Give = Give Rule
-data Take = Take Rule
-
 combinedRule f (dc:_) (hc:_) = f dc hc
 combinedRule _ _ _           = False
 
 
 -- helpers
-
--- in GHC 6.8, but not 6.6 apparently
-on g f x y = f x `g` f y
 
 allPairs f cards = and $ zipWith f cards (tail cards)
 

@@ -1,19 +1,21 @@
 module Necessities (
-    --module Action,
+    NFData (rnf),
+
     module Card,
+    module Deal,
     module Deck,
-    module Layout,
-    module Move,
+    module MovePatience,
     module Patience,
     module Pile,
     module Rule,
 ) where
 
---import Action
+import Control.Parallel.Strategies
+
 import Card
+import Deal
 import Deck
-import Layout
-import Move
+import MovePatience
 import Patience
 import Pile
 import Rule

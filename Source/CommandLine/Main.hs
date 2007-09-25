@@ -11,11 +11,12 @@ import qualified Data.Sequence as Sequence
 import List
 import Random
 
---import Action
 import Card
+import Deal
 import Deck
-import Game
-import Layout
+import Helpers
+import MovePatience
+import Necessities
 import Patience
 import Pile
 import Rule
@@ -36,14 +37,13 @@ countCardsUp ps = foldl' count 0 ps where
     count n (Foundation _, pile) = n + length pile
     count n (_           , _   ) = n
 
-betterGame (Game _ piles0) (Game _ piles1) =
-    (countCardsUp piles0) < (countCardsUp piles1)
+betterGame = (<) `on` (countCardsUp . piles)
 
 main = do
     gen <- newStdGen
-    let bc = begin spiderette gen
-        tree = dfs bc nextPositions
-    putStr $ show {- $ best betterGame -} $ takeWhile (not . wonGame) tree
+    let bc = beleagueredCastle gen
+        tree = dfs bc successors
+    putStr $ show $ best betterGame $ takeWhile (not . won) tree
 
 --main = do
 --    gen <- newStdGen
