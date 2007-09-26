@@ -66,7 +66,7 @@ defaultToPiles :: MovePatience p => p -> [ PileName ]
 defaultToPiles = pileNames
 
 defaultPilePairs :: MovePatience p => p -> [ (PileName, PileName) ]
-defaultPilePairs p = [ (f, t) | f <- fromPiles p, t <- toPiles p ]
+defaultPilePairs p = [ (f, t) | f <- fromPiles p, t <- toPiles p, f /= t ]
 
 defaultLegalHand :: MovePatience p =>
     p -> PileName -> PileName -> Hand -> Bool

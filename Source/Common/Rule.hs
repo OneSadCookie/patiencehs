@@ -19,8 +19,10 @@ module Rule (
     
     -- destination rules
     destinationIsEmpty,
+    destinationHasFewerThan,
     
     -- hand + destination rules
+    destinationIsSameRankAsTopOfHand,
     destinationIsRankOverTopOfHand,
     destinationIsRankUnderTopOfHand,
     destinationIsDifferentColorFromTopOfHand,
@@ -46,8 +48,6 @@ combinedRule _ _ _           = False
 
 
 -- helpers
-
-allPairs f cards = and $ zipWith f cards (tail cards)
 
 isAlternatingColors = allPairs $ (/=) `on` color
 
@@ -99,7 +99,14 @@ destinationIsEmpty :: Rule
 destinationIsEmpty [] _ = True
 destinationIsEmpty _  _ = False
 
+destinationHasFewerThan :: Int -> Rule
+destinationHasFewerThan n l _ = length l < n
+
 -- hand + destination rules
+
+destinationIsSameRankAsTopOfHand :: Rule
+destinationIsSameRankAsTopOfHand = combinedRule (\dc hc ->
+    fromEnum (rank dc) == fromEnum (rank hc))
 
 destinationIsRankOverTopOfHand :: Rule
 destinationIsRankOverTopOfHand = combinedRule (\dc hc ->

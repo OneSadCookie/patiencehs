@@ -1,23 +1,27 @@
 module Pile (
-    Hand,
     PileName (Foundation, Stock, Tableau, Waste),
     isFoundation,
     isTableau,
     isStock,
     foundations,
     tableaux,
+    
     Pile,
+    
+    Hand,
     hands,
     takeHand,
     giveHand,
+    
+    allPairs,
+    pileIsAllOneRank,
 ) where
 
 import Control.Parallel.Strategies
 import Data.List
 
 import Card
-
-type Hand = [ FacingCard ]
+import Helpers
 
 -- these are used for all games, to avoid lots of type parameters everywhere
 data PileName =
@@ -40,7 +44,13 @@ isStock _     = False
 foundations n = map Foundation [0..n-1]
 tableaux    n = map Tableau    [0..n-1]
 
+
+
 type Pile = [ FacingCard ]
+
+
+
+type Hand = [ FacingCard ]
 
 --hands = map reverse . inits
 hands = reverse . tails . reverse -- this is like 10x faster
@@ -48,3 +58,10 @@ hands = reverse . tails . reverse -- this is like 10x faster
 takeHand = flip (drop . length)
 
 giveHand = flip ((++) . reverse)
+
+
+
+allPairs f cards = and $ zipWith f cards (tail cards)
+
+pileIsAllOneRank :: Pile -> Bool
+pileIsAllOneRank = allPairs ((==) `on` rank)

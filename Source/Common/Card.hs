@@ -10,6 +10,7 @@ module Card (
     FacingCard (FaceUp, FaceDown, abstractCard),
     isFaceUp,
     turnUp,
+    turnDown,
 ) where
 
 import Control.Parallel.Strategies
@@ -92,3 +93,6 @@ isFaceUp _          = False
 
 turnUp (FaceDown card) = FaceUp card
 turnUp c = c
+
+turnDown (FaceUp card) = FaceDown card
+turnDown c = c

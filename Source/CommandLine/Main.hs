@@ -24,6 +24,7 @@ import Search
 import Shuffle
 
 import BeleagueredCastle
+import PileOn
 import Spider
 
 best :: (a -> a -> Bool) -> [a] -> [a]
@@ -42,15 +43,10 @@ betterGame = (<) `on` (countCardsUp . piles)
 
 main = do
     gen <- newStdGen
-    let bc = (spiderette False) gen
-        tree = dfs bc successors
-    putStr $ show {- $ best betterGame -} $ takeWhile (not . won) tree
-
---main = do
---    gen <- newStdGen
---    let bc = begin BeleagueredCastle gen
---        ms = moves bc
---        after = map (applyMove bc) ms
---    putStr $ show bc
---    putStr $ show ms
---    putStr $ show after
+    let p = pileOn gen
+        tree = dfs p successors
+        (progress, final) = break won tree
+    putStr $ show {- $ best betterGame -} $ progress
+    if not (null final)
+        then putStr $ show (head final)
+        else return ()
