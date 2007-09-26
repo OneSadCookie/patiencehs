@@ -37,13 +37,14 @@ countCardsUp ps = foldl' count 0 ps where
     count n (Foundation _, pile) = n + length pile
     count n (_           , _   ) = n
 
+betterGame :: PilePatience p => p -> p -> Bool
 betterGame = (<) `on` (countCardsUp . piles)
 
 main = do
     gen <- newStdGen
-    let bc = beleagueredCastle gen
+    let bc = (spiderette False) gen
         tree = dfs bc successors
-    putStr $ show $ best betterGame $ takeWhile (not . won) tree
+    putStr $ show {- $ best betterGame -} $ takeWhile (not . won) tree
 
 --main = do
 --    gen <- newStdGen

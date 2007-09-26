@@ -3,6 +3,7 @@ module Pile (
     PileName (Foundation, Stock, Tableau, Waste),
     isFoundation,
     isTableau,
+    isStock,
     foundations,
     tableaux,
     Pile,
@@ -32,6 +33,9 @@ isFoundation _              = False
 
 isTableau (Tableau _) = True
 isTableau _           = False
+
+isStock Stock = True
+isStock _     = False
 
 foundations n = map Foundation [0..n-1]
 tableaux    n = map Tableau    [0..n-1]

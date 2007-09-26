@@ -18,11 +18,13 @@ module MovePatience (
     defaultAllMoves,
     defaultSuccessors,
     applyMoveToMap,
+    turnUpBottomTableauCards,
 ) where
 
 import qualified Data.Map as Map
 import Data.Map ((!))
 
+import Card
 import Patience
 import Pile
 import Rule
@@ -94,3 +96,9 @@ applyMoveToMap m (Move fromName toName hand) =
         fromPile' = takeHand fromPile hand
         toPile' = giveHand toPile hand
     in Map.insert toName toPile' (Map.insert fromName fromPile' m)
+
+turnUpBottomTableauCards :: PileMap -> PileMap
+turnUpBottomTableauCards = Map.mapWithKey turnUpTableauCard where
+    turnUpTableauCard _ [] = []
+    turnUpTableauCard (Tableau _) (h:t) = turnUp h : t
+    turnUpTableauCard _ p = p
