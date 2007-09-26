@@ -1,4 +1,4 @@
-module Patience (
+module Common.Patience (
     PileMap,
     showPileMap,
     Patience (won, successors),
@@ -12,8 +12,8 @@ import Data.List
 import qualified Data.Map as Map
 import Data.Map ((!))
 
-import Pile
-import Rule
+import Common.Pile
+import Common.Rule
 
 type PileMap = Map.Map PileName Pile
 

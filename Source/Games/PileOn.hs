@@ -1,11 +1,11 @@
-module PileOn (
+module Games.PileOn (
     pileOn
 ) where
 
 import qualified Data.Map as Map
 import Data.Map ((!))
 
-import Necessities
+import Common.Necessities
 
 data PileOn = PileOn PileMap deriving (Eq, Ord)
 

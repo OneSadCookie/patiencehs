@@ -1,4 +1,4 @@
-module Pile (
+module Common.Pile (
     PileName (Foundation, Stock, Tableau, Waste),
     isFoundation,
     isTableau,
@@ -20,8 +20,8 @@ module Pile (
 import Control.Parallel.Strategies
 import Data.List
 
-import Card
-import Helpers
+import Common.Card
+import Common.Helpers
 
 -- these are used for all games, to avoid lots of type parameters everywhere
 data PileName =

@@ -1,4 +1,4 @@
-module Deck (
+module Common.Deck (
     Deck,
     standardDeck,
     
@@ -7,7 +7,7 @@ module Deck (
     doubleDeck,
 ) where
 
-import Card
+import Common.Card
 
 type Deck = [ Card ]
 

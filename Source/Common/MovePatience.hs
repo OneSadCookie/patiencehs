@@ -1,4 +1,4 @@
-module MovePatience (
+module Common.MovePatience (
     Move (Move),
     MovePatience (
         takeRule,
@@ -24,10 +24,10 @@ module MovePatience (
 import qualified Data.Map as Map
 import Data.Map ((!))
 
-import Card
-import Patience
-import Pile
-import Rule
+import Common.Card
+import Common.Patience
+import Common.Pile
+import Common.Rule
 
 data Move = Move PileName PileName Hand
 

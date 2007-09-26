@@ -1,8 +1,8 @@
-module BeleagueredCastle (
+module Games.BeleagueredCastle (
     beleagueredCastle
 ) where
 
-import Necessities
+import Common.Necessities
 
 data BeleagueredCastle = BeleagueredCastle PileMap deriving (Eq, Ord)
 

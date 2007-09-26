@@ -1,4 +1,4 @@
-module Rule (
+module Common.Rule (
     Rule,
     combineRules,
     (<&&>),
@@ -32,9 +32,9 @@ module Rule (
 import Control.Arrow
 import Control.Monad
 
-import Card
-import Helpers
-import Pile
+import Common.Card
+import Common.Helpers
+import Common.Pile
 
 type Rule = Pile -> Hand -> Bool
 

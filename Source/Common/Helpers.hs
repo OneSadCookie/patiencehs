@@ -1,4 +1,4 @@
-module Helpers (
+module Common.Helpers (
     on
 ) where
 

@@ -11,21 +11,21 @@ import qualified Data.Sequence as Sequence
 import List
 import Random
 
-import Card
-import Deal
-import Deck
-import Helpers
-import MovePatience
-import Necessities
-import Patience
-import Pile
-import Rule
-import Search
-import Shuffle
+import Common.Card
+import Common.Deal
+import Common.Deck
+import Common.Helpers
+import Common.MovePatience
+import Common.Necessities
+import Common.Patience
+import Common.Pile
+import Common.Rule
+import Common.Search
+import Common.Shuffle
 
-import BeleagueredCastle
-import PileOn
-import Spider
+import Games.BeleagueredCastle
+import Games.PileOn
+import Games.Spider
 
 best :: (a -> a -> Bool) -> [a] -> [a]
 best bpred (first:rest) = first : (best' first bpred rest) where

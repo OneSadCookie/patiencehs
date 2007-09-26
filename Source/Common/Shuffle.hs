@@ -1,4 +1,4 @@
-module Shuffle (
+module Common.Shuffle (
     shuffle
 ) where
 

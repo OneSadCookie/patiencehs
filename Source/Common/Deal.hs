@@ -1,4 +1,4 @@
-module Deal (
+module Common.Deal (
     DealRule,
     Layout,
     DeckFilter,
@@ -11,12 +11,12 @@ import Data.List
 import qualified Data.Map as Map
 import Random
 
-import Card
-import Deck
-import Patience
-import Pile
-import Rule
-import Shuffle
+import Common.Card
+import Common.Deck
+import Common.Patience
+import Common.Pile
+import Common.Rule
+import Common.Shuffle
 
 type DealRule = Deck -> (Deck, [ FacingCard ])
 type Layout = PileName -> [ DealRule ]

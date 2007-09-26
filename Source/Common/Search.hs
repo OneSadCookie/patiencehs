@@ -1,4 +1,4 @@
-module Search (
+module Common.Search (
     bfs,
     dfs,
 ) where

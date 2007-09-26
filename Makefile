@@ -1,7 +1,7 @@
 HSFILES := $(shell find Source -name '*.hs')
 HS_PFLAGS := -prof -auto-all
 HS_OFLAGS := 
-HS_CFLAGS := --make -iSource/Common -iSource/Games
+HS_CFLAGS := --make -iSource
 HSFLAGS := $(HS_OFLAGS) $(HS_CFLAGS) $(HS_LFLAGS) $(HS_PFLAGS)
 PATIENCE := patience
 BUILD := build

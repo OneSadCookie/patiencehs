@@ -1,4 +1,4 @@
-module Spider (
+module Games.Spider (
     spider,
     spiderette,
 ) where
@@ -6,7 +6,7 @@ module Spider (
 import qualified Data.Map as Map
 import Data.Map ((!))
 
-import Necessities
+import Common.Necessities
 
 data Spider =
     Spider { pilesS :: PileMap } |

@@ -1,4 +1,4 @@
-module Card (
+module Common.Card (
     Rank (Ace, Two, Three, Four, Five, Six, Seven,
           Eight, Nine, Ten, Jack, Queen, King),
     ranks,
