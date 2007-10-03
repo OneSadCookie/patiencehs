@@ -46,7 +46,7 @@ main = do
     let p = pileOn gen
         tree = dfs p successors
         (progress, final) = break won tree
-    putStr $ show {- $ best betterGame -} $ progress
+    -- putStr $ show {- $ best betterGame -} $ progress
     if not (null final)
         then putStr $ show (head final)
         else return ()
