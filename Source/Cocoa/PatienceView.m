@@ -58,12 +58,22 @@
                            suit:(Suit)suit
                            rank:(Rank)rank
 {
-    CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
+    NSColor *color = nil;
+    switch (ColorOfSuit(suit))
+    {
+    case Red:
+        color = [NSColor redColor];
+        break;
+    case Black:
+        color = [NSColor blackColor];
+        break;
+    }
     
     [[self legendToStringSuit:suit rank:rank]
-           drawAtPoint:*(NSPoint *)(&center)
-        withAttributes:nil];
+           drawAtPoint:NSPointFromCGPoint(center)
+        withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+            color, NSForegroundColorAttributeName,
+            nil]];
 }
 
 - (void)drawRect:(NSRect)clip

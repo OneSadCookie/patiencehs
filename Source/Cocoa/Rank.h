@@ -20,10 +20,13 @@ Rank;
 
 static inline unichar RankToChar(Rank r)
 {
-    if (r == Ace)   return 'A';
-    if (r == Ten)   return 'X';
-    if (r == Jack)  return 'J';
-    if (r == Queen) return 'Q';
-    if (r == King)  return 'K';
-    return r + '1';
+    switch (r)
+    {
+        case Ace:   return 'A';
+        case Ten:   return 'X';
+        case Jack:  return 'J';
+        case Queen: return 'Q';
+        case King:  return 'K';
+        default:    return r + '1';
+    }
 }
