@@ -1,4 +1,6 @@
 #import "PatienceView.h"
+#import "Rank.h"
+#import "Suit.h"
 
 @implementation PatienceView
 
@@ -10,7 +12,7 @@
         return nil;
     }
     
-    cardSize = CGSizeMake(70.0, 100.0);
+    cardSize = CGSizeMake(140.0, 200.0);
     cardCornerRadius = 10.0;
     
     return self;
@@ -45,13 +47,39 @@
     CGContextDrawPath(context, kCGPathFillStroke);
 }
 
+- (NSString *)legendToStringSuit:(Suit)suit rank:(Rank)rank
+{
+    return [NSString stringWithFormat:@"%C%C",
+        RankToChar(rank), SuitToChar(suit)];
+}
+
+- (void)drawCardLegendInContext:(CGContextRef)context
+                         center:(CGPoint)center
+                           suit:(Suit)suit
+                           rank:(Rank)rank
+{
+    CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
+    
+    [[self legendToStringSuit:suit rank:rank]
+           drawAtPoint:*(NSPoint *)(&center)
+        withAttributes:nil];
+}
+
 - (void)drawRect:(NSRect)clip
 {
     CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
     
+    CGPoint cardCenter = CGPointMake(
+        10.0 + 0.5 * cardSize.width,
+        10.0 + 0.5 * cardSize.height);
+    
     [self drawCardFrameInContext:context
-                          center:CGPointMake(10.0 + 0.5 * cardSize.width,
-                                             10.0 + 0.5 * cardSize.height)];
+                          center:cardCenter];
+    [self drawCardLegendInContext:context
+                           center:cardCenter
+                             suit:Hearts
+                             rank:King];
 }
 
 @end
