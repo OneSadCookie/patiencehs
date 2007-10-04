@@ -33,13 +33,16 @@
     CGFloat a2 = 2.0 * a1;
     CGFloat a3 = 3.0 * a1;
     
+    CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
+    
     CGContextBeginPath(context);
     CGContextMoveToPoint(context, x0, y0 - r);
     CGContextAddArc(context, x1, y0, r, a3, a0, 0);
     CGContextAddArc(context, x1, y1, r, a0, a1, 0);
     CGContextAddArc(context, x0, y1, r, a1, a2, 0);
     CGContextAddArc(context, x0, y0, r, a2, a3, 0);
-    CGContextDrawPath(context, kCGPathStroke);
+    CGContextDrawPath(context, kCGPathFillStroke);
 }
 
 - (void)drawRect:(NSRect)clip
