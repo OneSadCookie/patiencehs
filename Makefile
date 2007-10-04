@@ -46,9 +46,11 @@ $(APP_PKGINFO):
 	mkdir -p `dirname $@`
 	echo "APPL????" > $(APP_PKGINFO)
 
-$(APP_NIB): Resources/English.lproj/MainMenu.xib
+#$(APP_NIB): Resources/English.lproj/MainMenu.xib
+$(APP_NIB): Resources/English.lproj/MainMenu.nib/keyedobjects.nib
 	mkdir -p `dirname $@`
-	ibtool $< --compile $@
+	#ibtool $< --compile $@
+	cp $< $@
 
 clean:
 	rm -rf $(BUILD)
