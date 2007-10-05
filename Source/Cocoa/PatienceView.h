@@ -2,8 +2,9 @@
 
 @interface PatienceView : NSView
 {
-    CGSize cardSize;
+    CGSize  cardSize;
     CGFloat cardCornerRadius;
+    CGFloat cardLegendTextSize;
 }
 
 @end

@@ -14,6 +14,7 @@
     
     cardSize = CGSizeMake(140.0, 200.0);
     cardCornerRadius = 10.0;
+    cardLegendTextSize = 18.0;
     
     return self;
 }
@@ -49,8 +50,21 @@
 
 - (NSString *)legendToStringSuit:(Suit)suit rank:(Rank)rank
 {
-    return [NSString stringWithFormat:@"%C%C",
+    return [NSString stringWithFormat:@"%C\n%C",
         RankToChar(rank), SuitToChar(suit)];
+}
+
+- (NSColor *)colorOfSuit:(Suit)suit
+{
+    switch (ColorOfSuit(suit))
+    {
+    case Red:
+        return [NSColor redColor];
+    case Black:
+        return [NSColor blackColor];
+    default:
+        assert(0 && "Unhandled color in switch");
+    }
 }
 
 - (void)drawCardLegendInContext:(CGContextRef)context
@@ -58,26 +72,28 @@
                            suit:(Suit)suit
                            rank:(Rank)rank
 {
-    NSColor *color = nil;
-    switch (ColorOfSuit(suit))
-    {
-    case Red:
-        color = [NSColor redColor];
-        break;
-    case Black:
-        color = [NSColor blackColor];
-        break;
-    }
+    NSColor *color = [self colorOfSuit:suit];
+    NSMutableParagraphStyle *style =
+        [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
+    [style setAlignment:NSCenterTextAlignment];
+    NSFont *font = [NSFont fontWithName:@"Lucida Grande"
+                                   size:cardLegendTextSize];
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
+        color, NSForegroundColorAttributeName,
+        style, NSParagraphStyleAttributeName,
+        font,  NSFontAttributeName,
+        nil];
+    NSAttributedString *string = [[NSAttributedString alloc]
+        initWithString:[self legendToStringSuit:suit rank:rank]
+            attributes:attributes];
+    NSSize size = [string size];
     
     NSPoint where = NSMakePoint(
         center.x - (0.5 * cardSize.width - 0.5 * cardCornerRadius),
-        center.y - (0.5 * cardSize.height - 0.5 * cardCornerRadius));
+        center.y + (0.5 * cardSize.height - 0.5 * cardCornerRadius) - size.height);
     
-    [[self legendToStringSuit:suit rank:rank]
-           drawAtPoint:where
-        withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-            color, NSForegroundColorAttributeName,
-            nil]];
+    [string drawInRect:NSMakeRect(
+        where.x, where.y, size.width, size.height)];
 }
 
 - (void)drawRect:(NSRect)clip
