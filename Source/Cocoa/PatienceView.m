@@ -69,8 +69,12 @@
         break;
     }
     
+    NSPoint where = NSMakePoint(
+        center.x - (0.5 * cardSize.width - 0.5 * cardCornerRadius),
+        center.y - (0.5 * cardSize.height - 0.5 * cardCornerRadius));
+    
     [[self legendToStringSuit:suit rank:rank]
-           drawAtPoint:NSPointFromCGPoint(center)
+           drawAtPoint:where
         withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
             color, NSForegroundColorAttributeName,
             nil]];
