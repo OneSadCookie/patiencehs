@@ -5,6 +5,9 @@
     CGSize  cardSize;
     CGFloat cardCornerRadius;
     CGFloat cardLegendTextSize;
+    CGFloat cardCourtFaceSize;
+    CGFloat cardAceFaceSize;
+    CGFloat cardPipFaceSize;
 }
 
 @end
