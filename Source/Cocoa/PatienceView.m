@@ -19,17 +19,17 @@
     return self;
 }
 
-- (void)drawCardFrameInContext:(CGContextRef)context center:(CGPoint)center
+- (void)drawCardFrameInContext:(CGContextRef)context
 {
     CGFloat r = cardCornerRadius;
     
     CGFloat halfWidth = 0.5 * cardSize.width - r;
     CGFloat halfHeight = 0.5 * cardSize.height - r;
     
-    CGFloat x0 = center.x - halfWidth;
-    CGFloat x1 = center.x + halfWidth;
-    CGFloat y0 = center.y - halfHeight;
-    CGFloat y1 = center.y + halfHeight;
+    CGFloat x0 = -halfWidth;
+    CGFloat x1 =  halfWidth;
+    CGFloat y0 = -halfHeight;
+    CGFloat y1 =  halfHeight;
     
     CGFloat a0 = 0.0;
     CGFloat a1 = 0.5 * M_PI;
@@ -67,10 +67,8 @@
     }
 }
 
-- (void)drawCardLegendInContext:(CGContextRef)context
-                         center:(CGPoint)center
-                           suit:(Suit)suit
-                           rank:(Rank)rank
+- (void)drawCardLegendSuit:(Suit)suit
+                      rank:(Rank)rank
 {
     NSColor *color = [self colorOfSuit:suit];
     NSMutableParagraphStyle *style =
@@ -88,28 +86,39 @@
             attributes:attributes];
     NSSize size = [string size];
     
-    NSPoint where = NSMakePoint(
-        center.x - (0.5 * cardSize.width - 0.5 * cardCornerRadius),
-        center.y + (0.5 * cardSize.height - 0.5 * cardCornerRadius) - size.height);
+    NSAffineTransform *translation = [NSAffineTransform transform];
+    [translation translateXBy:-0.5 * (cardSize.width - cardCornerRadius)
+                          yBy: 0.5 * (cardSize.height - cardCornerRadius) -
+                                   size.height];
+    NSAffineTransform *rotation = [NSAffineTransform transform];
+    [rotation rotateByRadians:M_PI];
     
+    [NSGraphicsContext saveGraphicsState];
+    [translation concat];
     [string drawInRect:NSMakeRect(
-        where.x, where.y, size.width, size.height)];
+        0.0, 0.0, size.width, size.height)];
+    [NSGraphicsContext restoreGraphicsState];
+    
+    [NSGraphicsContext saveGraphicsState];
+    [rotation concat];
+    [translation concat];
+    [string drawInRect:NSMakeRect(
+        0.0, 0.0, size.width, size.height)];
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)drawRect:(NSRect)clip
 {
     CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
     
-    CGPoint cardCenter = CGPointMake(
-        10.0 + 0.5 * cardSize.width,
-        10.0 + 0.5 * cardSize.height);
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:10.0 + 0.5 * cardSize.width
+                        yBy:10.0 + 0.5 * cardSize.height];
+    [transform concat];
     
-    [self drawCardFrameInContext:context
-                          center:cardCenter];
-    [self drawCardLegendInContext:context
-                           center:cardCenter
-                             suit:Hearts
-                             rank:King];
+    [self drawCardFrameInContext:context];
+    [self drawCardLegendSuit:Hearts
+                        rank:King];
 }
 
 @end
