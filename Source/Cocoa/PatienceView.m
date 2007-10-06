@@ -3,7 +3,7 @@
 #import "Suit.h"
 
 #define SIXTH (1.0 / 6.0)
-#define NINTH (1.0 / 9.0)
+#define EIGHTEENTH (1.0 / 18.0)
 
 static NSPoint PipPositions[9][10/*should be variable*/] =
 {
@@ -21,16 +21,16 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
     { { 0.333, 1 * SIXTH }, { 0.333, 3 * SIXTH }, { 0.333, 5 * SIXTH },
       { 0.5, 2 * SIXTH }, { 0.5, 4 * SIXTH },
       { 0.667, 1 * SIXTH }, { 0.667, 3 * SIXTH }, { 0.667, 5 * SIXTH } },
-    { { 0.333, 1 * SIXTH }, { 0.333, 1 * SIXTH + 2 * NINTH },
-      { 0.333, 1 * SIXTH + 4 * NINTH }, { 0.333, 5 * SIXTH },
+    { { 0.333, 1 * SIXTH }, { 0.333, 7 * EIGHTEENTH },
+      { 0.333, 11 * EIGHTEENTH }, { 0.333, 5 * SIXTH },
       { 0.5, 3 * SIXTH },
-      { 0.667, 1 * SIXTH }, { 0.667, 1 * SIXTH + 2 * NINTH },
-      { 0.667, 1 * SIXTH + 4 * NINTH }, { 0.667, 5 * SIXTH } },
-    { { 0.333, 1 * SIXTH }, { 0.333, 1 * SIXTH + 2 * NINTH },
-      { 0.333, 1 * SIXTH + 4 * NINTH }, { 0.333, 5 * SIXTH },
-      { 0.5, 1 * SIXTH + 1 * NINTH }, { 0.5, 1 * SIXTH + 5 * NINTH },
-      { 0.667, 1 * SIXTH }, { 0.667, 1 * SIXTH + 2 * NINTH },
-      { 0.667, 1 * SIXTH + 4 * NINTH }, { 0.667, 5 * SIXTH } },    
+      { 0.667, 1 * SIXTH }, { 0.667, 7 * EIGHTEENTH },
+      { 0.667, 11 * EIGHTEENTH }, { 0.667, 5 * SIXTH } },
+    { { 0.333, 1 * SIXTH }, { 0.333, 7 * EIGHTEENTH },
+      { 0.333, 11 * EIGHTEENTH }, { 0.333, 5 * SIXTH },
+      { 0.5, 5 * EIGHTEENTH }, { 0.5, 13 * EIGHTEENTH },
+      { 0.667, 1 * SIXTH }, { 0.667, 7 * EIGHTEENTH },
+      { 0.667, 11 * EIGHTEENTH }, { 0.667, 5 * SIXTH } },    
 };
 
 @implementation PatienceView
@@ -53,8 +53,10 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
     return self;
 }
 
-- (void)drawCardFrameInContext:(CGContextRef)context
+- (void)drawCardFrame
 {
+    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    
     CGFloat r = cardCornerRadius;
     
     CGFloat halfWidth = 0.5 * cardSize.width - r;
@@ -268,14 +270,12 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
 
 - (void)drawCardSuit:(Suit)suit rank:(Rank)rank at:(NSPoint)where
 {
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
-    
     NSAffineTransform *transform = [NSAffineTransform transform];
     [transform translateXBy:where.x yBy:where.y];
     
     [NSGraphicsContext saveGraphicsState];
     [transform concat];
-    [self drawCardFrameInContext:context];
+    [self drawCardFrame];
     [self drawCardLegendSuit:suit rank:rank];
     [self drawCardFaceSuit:suit rank:rank];
     [NSGraphicsContext restoreGraphicsState];
