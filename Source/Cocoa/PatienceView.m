@@ -103,23 +103,32 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
     }
 }
 
-- (void)drawCardLegendSuit:(Suit)suit
-                      rank:(Rank)rank
+- (NSAttributedString *)string:(NSString *)text
+                        ofSize:(CGFloat)size
+                 coloredBySuit:(Suit)suit
 {
     NSColor *color = [self colorOfSuit:suit];
     NSMutableParagraphStyle *style =
         [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
     [style setAlignment:NSCenterTextAlignment];
     NSFont *font = [NSFont fontWithName:@"Lucida Grande"
-                                   size:cardLegendTextSize];
+                                   size:size];
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
         color, NSForegroundColorAttributeName,
         style, NSParagraphStyleAttributeName,
         font,  NSFontAttributeName,
         nil];
-    NSAttributedString *string = [[NSAttributedString alloc]
-        initWithString:[self legendToStringSuit:suit rank:rank]
-            attributes:attributes];
+    return [[NSAttributedString alloc] initWithString:text
+                                           attributes:attributes];
+}
+
+- (void)drawCardLegendSuit:(Suit)suit
+                      rank:(Rank)rank
+{
+    NSAttributedString *string = [self
+                string:[self legendToStringSuit:suit rank:rank]
+                ofSize:cardLegendTextSize
+         coloredBySuit:suit];
     NSSize size = [string size];
     
     NSAffineTransform *translation = [NSAffineTransform transform];
@@ -149,20 +158,10 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
 
 - (void)drawAceFaceSuit:(Suit)suit
 {
-    NSColor *color = [self colorOfSuit:suit];
-    NSMutableParagraphStyle *style =
-        [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-    [style setAlignment:NSCenterTextAlignment];
-    NSFont *font = [NSFont fontWithName:@"Lucida Grande"
-                                   size:cardAceFaceSize];
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-        color, NSForegroundColorAttributeName,
-        style, NSParagraphStyleAttributeName,
-        font,  NSFontAttributeName,
-        nil];
-    NSAttributedString *string = [[NSAttributedString alloc]
-        initWithString:[self aceFaceToStringSuit:suit]
-            attributes:attributes];
+    NSAttributedString *string = [self
+                string:[self aceFaceToStringSuit:suit]
+                ofSize:cardAceFaceSize
+         coloredBySuit:suit];
     NSSize size = [string size];
     
     [string drawInRect:NSMakeRect(
@@ -177,20 +176,10 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
 
 - (void)drawCourtFaceSuit:(Suit)suit rank:(Rank)rank
 {
-    NSColor *color = [self colorOfSuit:suit];
-    NSMutableParagraphStyle *style =
-        [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-    [style setAlignment:NSCenterTextAlignment];
-    NSFont *font = [NSFont fontWithName:@"Lucida Grande"
-                                   size:cardCourtFaceSize];
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-        color, NSForegroundColorAttributeName,
-        style, NSParagraphStyleAttributeName,
-        font,  NSFontAttributeName,
-        nil];
-    NSAttributedString *string = [[NSAttributedString alloc]
-        initWithString:[self courtFaceToStringSuit:suit rank:rank]
-            attributes:attributes];
+    NSAttributedString *string = [self
+                string:[self courtFaceToStringSuit:suit rank:rank]
+                ofSize:cardCourtFaceSize
+         coloredBySuit:suit];
     NSSize size = [string size];
     
     NSAffineTransform *rotation = [NSAffineTransform transform];
@@ -210,20 +199,10 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
 
 - (void)drawPipFaceSuit:(Suit)suit rank:(Rank)rank
 {
-    NSColor *color = [self colorOfSuit:suit];
-    NSMutableParagraphStyle *style =
-        [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-    [style setAlignment:NSCenterTextAlignment];
-    NSFont *font = [NSFont fontWithName:@"Lucida Grande"
-                                   size:cardPipFaceSize];
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-        color, NSForegroundColorAttributeName,
-        style, NSParagraphStyleAttributeName,
-        font,  NSFontAttributeName,
-        nil];
-    NSAttributedString *string = [[NSAttributedString alloc]
-        initWithString:[NSString stringWithFormat:@"%C", SuitToChar(suit)]
-            attributes:attributes];
+    NSAttributedString *string = [self
+                string:[NSString stringWithFormat:@"%C", SuitToChar(suit)]
+                ofSize:cardPipFaceSize
+         coloredBySuit:suit];
     NSSize size = [string size];
     
     NSAffineTransform *rotation = [NSAffineTransform transform];
