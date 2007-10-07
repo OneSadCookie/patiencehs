@@ -1,13 +1,10 @@
 #import "MacOSX.h"
 
+@class CardRenderer;
+
 @interface PatienceView : NSView
 {
-    CGSize  cardSize;
-    CGFloat cardCornerRadius;
-    CGFloat cardLegendTextSize;
-    CGFloat cardCourtFaceSize;
-    CGFloat cardAceFaceSize;
-    CGFloat cardPipFaceSize;
+    CardRenderer *renderer;
 }
 
 @end
