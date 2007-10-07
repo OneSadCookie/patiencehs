@@ -300,6 +300,9 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
 
 - (void)drawRect:(NSRect)clip
 {
+    [[NSColor colorWithDeviceRed:0.0 green:0.25 blue:0.0 alpha:1.0] set];
+    NSRectFill(clip);
+    
     CGFloat y = 10.5 + 0.5 * cardSize.height;
     
     [self drawCardSuit:Hearts rank:King at:NSMakePoint(
