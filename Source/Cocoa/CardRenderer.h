@@ -19,4 +19,7 @@
               faceUp:(BOOL)faceUp
                   at:(NSPoint)where;
 
+- (void)drawSpaceEmblem:(NSString *)emblem
+                     at:(NSPoint)where;
+
 @end

@@ -31,6 +31,11 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
       { 0.667, 11 * EIGHTEENTH }, { 0.667, 5 * SIXTH } },
 };
 
+static CGFloat Adjust(CGFloat in)
+{
+    return 0.5 + floor(in);
+}
+
 @implementation CardRenderer
 
 - (id)init
@@ -51,7 +56,7 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
     return self;
 }
 
-- (void)drawCardFrame
+- (void)drawCardOutline
 {
     CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
     
@@ -70,9 +75,6 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
     CGFloat a2 = 2.0 * a1;
     CGFloat a3 = 3.0 * a1;
     
-    CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
-    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
-    
     CGContextBeginPath(context);
     CGContextMoveToPoint(context, x0, y0 - r);
     CGContextAddArc(context, x1, y0, r, a3, a0, 0);
@@ -80,6 +82,16 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
     CGContextAddArc(context, x0, y1, r, a1, a2, 0);
     CGContextAddArc(context, x0, y0, r, a2, a3, 0);
     CGContextDrawPath(context, kCGPathFillStroke);
+}
+
+- (void)drawCardFrame
+{
+    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    
+    CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
+    
+    [self drawCardOutline];
 }
 
 - (NSString *)legendToStringSuit:(Suit)suit rank:(Rank)rank
@@ -245,21 +257,17 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
     }
 }
 
-- (void)drawCardSuit:(Suit)suit rank:(Rank)rank at:(NSPoint)where
+- (void)drawCardSuit:(Suit)suit rank:(Rank)rank
 {
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:where.x yBy:where.y];
-    
-    [NSGraphicsContext saveGraphicsState];
-    [transform concat];
     [self drawCardFrame];
     [self drawCardLegendSuit:suit rank:rank];
     [self drawCardFaceSuit:suit rank:rank];
-    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)drawCardBack
 {
+    [self drawCardFrame];
+    
     CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
     
     CGFloat r = cardCornerRadius;
@@ -284,16 +292,12 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
     CGContextDrawPath(context, kCGPathFillStroke);
 }
 
-- (void)drawCardBackAt:(NSPoint)where
+- (void)translateTo:(NSPoint)where
 {
     NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:where.x yBy:where.y];
-    
+    [transform translateXBy:Adjust(where.x) yBy:Adjust(where.y)];
     [NSGraphicsContext saveGraphicsState];
     [transform concat];
-    [self drawCardFrame];
-    [self drawCardBack];
-    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)drawCardSuit:(Suit)suit
@@ -301,14 +305,44 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
               faceUp:(BOOL)faceUp
                   at:(NSPoint)where
 {
+    [self translateTo:where];
+    
     if (faceUp)
     {
-        [self drawCardSuit:suit rank:rank at:where];
+        [self drawCardSuit:suit rank:rank];
     }
     else
     {
-        [self drawCardBackAt:where];
+        [self drawCardBack];
     }
+    
+    [NSGraphicsContext restoreGraphicsState];
+}
+
+- (void)drawSpaceEmblem:(NSString *)emblem
+                     at:(NSPoint)where
+{
+    [self translateTo:where];
+    
+    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    
+    // CGFloat lengths[] = { 10.0, 10.0 };
+    // CGContextSetLineDash(context, 0.0, lengths, sizeof(lengths) / sizeof(CGFloat));
+    CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 0.5);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 0.0);
+    
+    [self drawCardOutline];
+    
+    NSAttributedString *string = [self
+                string:emblem
+                ofSize:cardAceFaceSize
+         coloredBySuit:Spades];
+    NSSize size = [string size];
+    
+    [string drawInRect:NSMakeRect(
+        -0.5 * size.width, -0.5 * size.height, size.width, size.height)];
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 @end
