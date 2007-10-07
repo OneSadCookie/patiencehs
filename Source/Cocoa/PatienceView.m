@@ -260,16 +260,58 @@ static NSPoint PipPositions[9][10/*should be variable*/] =
     [NSGraphicsContext restoreGraphicsState];
 }
 
+- (void)drawCardBack
+{
+    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    
+    CGFloat r = cardCornerRadius;
+    
+    CGFloat halfWidth = 0.5 * cardSize.width - r;
+    CGFloat halfHeight = 0.5 * cardSize.height - r;
+    
+    CGFloat x0 = -halfWidth;
+    CGFloat x1 =  halfWidth;
+    CGFloat y0 = -halfHeight;
+    CGFloat y1 =  halfHeight;
+    
+    CGContextSetRGBFillColor(context, 0.5, 0.5, 0.5, 1.0);
+    CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
+    
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, x0, y0);
+    CGContextAddLineToPoint(context, x1, y0);
+    CGContextAddLineToPoint(context, x1, y1);
+    CGContextAddLineToPoint(context, x0, y1);
+    CGContextAddLineToPoint(context, x0, y0);
+    CGContextDrawPath(context, kCGPathFillStroke);
+}
+
+- (void)drawCardBackAt:(NSPoint)where
+{
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:where.x yBy:where.y];
+    
+    [NSGraphicsContext saveGraphicsState];
+    [transform concat];
+    [self drawCardFrame];
+    [self drawCardBack];
+    [NSGraphicsContext restoreGraphicsState];
+}
+
 - (void)drawRect:(NSRect)clip
 {
+    CGFloat y = 10.5 + 0.5 * cardSize.height;
+    
     [self drawCardSuit:Hearts rank:King at:NSMakePoint(
-        10.0 + 0.5 * cardSize.width, 10.0 + 0.5 * cardSize.height)];
+        10.5 + 0.5 * cardSize.width, y)];
     [self drawCardSuit:Spades rank:Ace at:NSMakePoint(
-        20.0 + 1.5 * cardSize.width, 10.0 + 0.5 * cardSize.height)];
+        20.5 + 1.5 * cardSize.width, y)];
     [self drawCardSuit:Clubs rank:Seven at:NSMakePoint(
-        30.0 + 2.5 * cardSize.width, 10.0 + 0.5 * cardSize.height)];
+        30.5 + 2.5 * cardSize.width, y)];
     [self drawCardSuit:Diamonds rank:Ten at:NSMakePoint(
-        40.0 + 3.5 * cardSize.width, 10.0 + 0.5 * cardSize.height)];
+        40.5 + 3.5 * cardSize.width, y)];
+    [self drawCardBackAt:NSMakePoint(
+        50.5 + 4.5 * cardSize.width, y)];
 }
 
 @end
