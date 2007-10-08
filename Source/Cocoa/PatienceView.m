@@ -41,7 +41,6 @@
                faceUp:(BOOL)faceUp
                    at:(NSPoint)where
 {
-    NSLog(@"card placed");
     [renderer drawCardSuit:suit
                       rank:rank
                     faceUp:faceUp

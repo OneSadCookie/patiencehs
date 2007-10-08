@@ -24,11 +24,10 @@ instance UIPatience AnyUIPatience where
 
 data AppState = AppState [AnyUIPatience]
 
-breakAfter p l =
-    let (l0, l1) = break p l
-    in appendHead l0 l1 where
-        appendHead xs [] = xs
-        appendHead xs (y:ys) = xs ++ [y]
+breakAfter p [] = []
+breakAfter p (h:t)
+    | p h       = [ h ]
+    | otherwise = h : breakAfter p t
 
 makeAppState start =
     let tree = dfs start successors
@@ -54,14 +53,9 @@ foreign import ccall "PatienceHS.h PlaceCard" placeCard ::
 foreign export ccall placeCards ::
     Ptr () -> Ptr () -> Double -> Double -> IO ()
 placeCards oldVoidPtr userData width height = do
-    putStrLn (show oldVoidPtr)
-    putStrLn "Placing cards"
     let oldPointer = castPtrToStablePtr oldVoidPtr
-    putStrLn "got old stable"
     state <- deRefStablePtr oldPointer
-    putStrLn "deref'd"
     (AppState (p:_)) <- return state
-    putStrLn "going to place cards"
     let locations = cardLocations p width height
     mapM (\(c, x, y) -> placeCard
         userData
@@ -69,8 +63,7 @@ placeCards oldVoidPtr userData width height = do
         (fromIntegral $ fromEnum $ suit c)
         (fromIntegral $ fromEnum $ rank c)
         (realToFrac x)
-        (realToFrac y)) (take 3 locations)
-    putStrLn "done"
+        (realToFrac y)) locations
     return ()
 
 foreign import ccall "PatienceHS.h PatienceStart" patienceStart ::
@@ -79,9 +72,6 @@ foreign import ccall "PatienceHS.h PatienceStart" patienceStart ::
 main = do
     gen <- newStdGen
     let state = makeAppState (beleagueredCastle gen)
-    (AppState (p:_)) <- return state
-    putStrLn "bwahahahaa"
     stable <- newStablePtr state
     let pointer = castStablePtrToPtr stable
-    putStrLn (show pointer)
     patienceStart pointer
