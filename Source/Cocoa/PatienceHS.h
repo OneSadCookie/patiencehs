@@ -3,6 +3,14 @@
 
 #import "Haskell.h"
 
-extern void PatienceStart(HsPtr state);
+extern void PatienceStart(void *state);
+
+extern void PlaceCard(
+    void   *userData,
+    int     faceUp,
+    int     suit,
+    int     rank,
+    double  x,
+    double  y);
 
 #endif

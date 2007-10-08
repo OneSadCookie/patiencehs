@@ -6,6 +6,7 @@ import Foreign
 import CForeign
 import Random
 
+import Common.Card
 import Common.Patience
 import Common.Search
 import Common.UIPatience
@@ -47,16 +48,40 @@ stepState = eventHandler stepState where
     --stepState a@(AppState [e]) = a
     stepState (AppState (h:t)) = AppState t
 
+foreign import ccall "PatienceHS.h PlaceCard" placeCard ::
+    Ptr () -> CInt -> CInt -> CInt -> CDouble -> CDouble -> IO ()
+
+foreign export ccall placeCards ::
+    Ptr () -> Ptr () -> Double -> Double -> IO ()
+placeCards oldVoidPtr userData width height = do
+    putStrLn (show oldVoidPtr)
+    putStrLn "Placing cards"
+    let oldPointer = castPtrToStablePtr oldVoidPtr
+    putStrLn "got old stable"
+    state <- deRefStablePtr oldPointer
+    putStrLn "deref'd"
+    (AppState (p:_)) <- return state
+    putStrLn "going to place cards"
+    let locations = cardLocations p width height
+    mapM (\(c, x, y) -> placeCard
+        userData
+        (fromIntegral $ fromEnum $ isFaceUp c)
+        (fromIntegral $ fromEnum $ suit c)
+        (fromIntegral $ fromEnum $ rank c)
+        (realToFrac x)
+        (realToFrac y)) (take 3 locations)
+    putStrLn "done"
+    return ()
+
 foreign import ccall "PatienceHS.h PatienceStart" patienceStart ::
     Ptr () -> IO ()
 
 main = do
     gen <- newStdGen
     let state = makeAppState (beleagueredCastle gen)
-    pointer <- newStablePtr state
-    patienceStart (castStablePtrToPtr pointer)
-
---main = do
---    gen <- newStdGen
---    let p = bc gen
---    putStr $ concatMap show (cardLocations p 960.0 600.0)
+    (AppState (p:_)) <- return state
+    putStrLn "bwahahahaa"
+    stable <- newStablePtr state
+    let pointer = castStablePtrToPtr stable
+    putStrLn (show pointer)
+    patienceStart pointer
