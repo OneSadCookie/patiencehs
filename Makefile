@@ -8,9 +8,11 @@ HSFLAGS := $(HS_OFLAGS) $(HS_CFLAGS) $(HS_LFLAGS) $(HS_PFLAGS)
 
 HFILES := $(shell find Source -name '*.h')
 MFILES := $(shell find Source -name '*.m')
+OFILES := $(patsubst Source/%.m,build/%.o,$(MFILES))
+M_IFLAGS := -I/Volumes/Files/Unix/lib/ghc-6.6.1/include
 M_CFLAGS := -Wall -W -Wno-unused-parameter -Wnewline-eof -Werror
 M_OFLAGS := -g -O2
-MFLAGS := $(M_CFLAGS) $(M_OFLAGS)
+MFLAGS := $(M_IFLAGS) $(M_CFLAGS) $(M_OFLAGS)
 LINKFLAGS := -framework Cocoa
 
 PATIENCE := patience
@@ -34,11 +36,14 @@ patience_app: $(APP_EXE) $(APP_INFO_PLIST) $(APP_PKGINFO) resources
 
 resources: $(APP_NIB)
 
-$(APP_EXE): $(MFILES) $(HFILES) $(HSFILES) $()
+build/%.o: Source/%.m $(HFILES)
+	mkdir -p $(BUILD)/Cocoa
+	gcc -c $(MFLAGS) $< -o $@
+
+$(APP_EXE): $(OFILES) $(HFILES) $(HSFILES)
 	mkdir -p `dirname $@`
 	mkdir -p $(BUILD)/Cocoa
-	ghc $(HSFLAGS) Source/Cocoa/Main.hs -odir $(BUILD)/Cocoa -hidir $(BUILD)/Cocoa -c
-	gcc $(MFLAGS) $(MFILES) -o $(APP_EXE) $(LINKFLAGS)
+	ghc $(HSFLAGS) Source/Cocoa/Main.hs -odir $(BUILD)/Cocoa -hidir $(BUILD)/Cocoa $(OFILES) -o $(APP_EXE) $(LINKFLAGS)
 
 $(APP_INFO_PLIST): Resources/Info.plist
 	mkdir -p `dirname $@`

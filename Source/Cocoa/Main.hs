@@ -7,6 +7,7 @@ import CForeign
 import Random
 
 import Common.Patience
+import Common.Search
 import Common.UIPatience
 
 import Games.BeleagueredCastle
@@ -20,10 +21,29 @@ instance Patience AnyUIPatience where
 instance UIPatience AnyUIPatience where
     cardLocations (AnyUIPatience p) = cardLocations p
 
-bc :: StdGen -> AnyUIPatience
-bc = AnyUIPatience . beleagueredCastle
+data AppState = AppState [AnyUIPatience]
+
+breakAfter p l =
+    let (l0, l1) = break p l
+    in appendHead l0 l1 where
+        appendHead xs [] = xs
+        appendHead xs (y:ys) = xs ++ [y]
+
+makeAppState start =
+    let tree = dfs start successors
+        states = map AnyUIPatience $ breakAfter won tree
+    in AppState states
+
+foreign import ccall "PatienceHS.h PatienceStart" patienceStart ::
+    Ptr () -> IO ()
 
 main = do
     gen <- newStdGen
-    let p = bc gen
-    putStr $ concatMap show (cardLocations p 960.0 600.0)
+    let state = makeAppState (beleagueredCastle gen)
+    pointer <- newStablePtr state
+    patienceStart (castStablePtrToPtr pointer)
+
+--main = do
+--    gen <- newStdGen
+--    let p = bc gen
+--    putStr $ concatMap show (cardLocations p 960.0 600.0)
