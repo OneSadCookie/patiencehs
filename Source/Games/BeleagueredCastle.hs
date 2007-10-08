@@ -45,6 +45,19 @@ instance Patience BeleagueredCastle where
     
     won = wonIfFoundationCountIs 52
 
+instance GridPatience BeleagueredCastle where
+    grid _ =
+        let tc i = Cell (Tableau i) FillsRight
+            fc i = Cell (Foundation i) PilesUp
+            x = CellIgnored
+        in [[tc 0, x, x, fc 0, tc 4, x, x],
+            [tc 1, x, x, fc 1, tc 5, x, x],
+            [tc 2, x, x, fc 2, tc 6, x, x],
+            [tc 3, x, x, fc 3, tc 7, x, x]]
+
+instance UIPatience BeleagueredCastle where
+    cardLocations = defaultCardLocations
+
 layout (Foundation i) = [ place $ FaceUp $ Card Ace $ toEnum i ]
 layout (Tableau    _) = [ deal FaceUp 6 ]
 

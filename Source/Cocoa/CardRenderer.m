@@ -115,9 +115,8 @@ static CGFloat Adjust(CGFloat in)
 
 - (NSAttributedString *)string:(NSString *)text
                         ofSize:(CGFloat)size
-                 coloredBySuit:(Suit)suit
+                         color:(NSColor *)color
 {
-    NSColor *color = [self colorOfSuit:suit];
     NSMutableParagraphStyle *style =
         [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
     [style setAlignment:NSCenterTextAlignment];
@@ -130,6 +129,14 @@ static CGFloat Adjust(CGFloat in)
         nil];
     return [[NSAttributedString alloc] initWithString:text
                                            attributes:attributes];
+}
+
+- (NSAttributedString *)string:(NSString *)text
+                        ofSize:(CGFloat)size
+                 coloredBySuit:(Suit)suit
+{
+    NSColor *color = [self colorOfSuit:suit];
+    return [self string:text ofSize:size color:color];
 }
 
 - (void)drawCardLegendSuit:(Suit)suit
@@ -280,7 +287,7 @@ static CGFloat Adjust(CGFloat in)
     CGFloat y0 = -halfHeight;
     CGFloat y1 =  halfHeight;
     
-    CGContextSetRGBFillColor(context, 0.5, 0.5, 0.5, 1.0);
+    CGContextSetRGBFillColor(context, 0.0, 0.0, 0.25, 1.0);
     CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
     
     CGContextBeginPath(context);
@@ -319,8 +326,8 @@ static CGFloat Adjust(CGFloat in)
     [NSGraphicsContext restoreGraphicsState];
 }
 
-- (void)drawSpaceEmblem:(NSString *)emblem
-                     at:(NSPoint)where
+- (void)drawSpaceWithEmblem:(NSString *)emblem
+                         at:(NSPoint)where
 {
     [self translateTo:where];
     
@@ -336,7 +343,7 @@ static CGFloat Adjust(CGFloat in)
     NSAttributedString *string = [self
                 string:emblem
                 ofSize:cardAceFaceSize
-         coloredBySuit:Spades];
+                 color:[NSColor whiteColor]];
     NSSize size = [string size];
     
     [string drawInRect:NSMakeRect(

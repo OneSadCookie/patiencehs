@@ -32,17 +32,17 @@
         10.0 + 0.5 * cardSize.width,
         10.0 + 0.5 * cardSize.height);
     
-    [renderer drawCardSuit:Hearts rank:King faceUp:YES at:p];
+    [renderer drawCardSuit:Diamonds rank:King faceUp:YES at:p];
     p.x += 10.0 + cardSize.width;
     [renderer drawCardSuit:Spades rank:Ace faceUp:YES at:p];
     p.x += 10.0 + cardSize.width;
     [renderer drawCardSuit:Clubs rank:Seven faceUp:YES at:p];
     p.x += 10.0 + cardSize.width;
-    [renderer drawCardSuit:Diamonds rank:Ten faceUp:YES at:p];
+    [renderer drawCardSuit:Hearts rank:Ten faceUp:YES at:p];
     p.x += 10.0 + cardSize.width;
-    [renderer drawCardSuit:Hearts rank:Two faceUp:NO at:p];
+    [renderer drawCardSuit:Diamonds rank:Two faceUp:NO at:p];
     p.x += 10.0 + cardSize.width;
-    [renderer drawSpaceEmblem:[NSString stringWithFormat:@"%C", 0x21A9] at:p];
+    [renderer drawSpaceWithEmblem:[NSString stringWithFormat:@"%C", 0x21A9] at:p];
 }
 
 @end

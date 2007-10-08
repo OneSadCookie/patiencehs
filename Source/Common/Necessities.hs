@@ -8,6 +8,7 @@ module Common.Necessities (
     module Common.Patience,
     module Common.Pile,
     module Common.Rule,
+    module Common.UIPatience,
 ) where
 
 import Control.Parallel.Strategies
@@ -19,3 +20,4 @@ import Common.MovePatience
 import Common.Patience
 import Common.Pile
 import Common.Rule
+import Common.UIPatience

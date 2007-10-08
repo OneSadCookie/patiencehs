@@ -22,6 +22,7 @@ import Common.Pile
 import Common.Rule
 import Common.Search
 import Common.Shuffle
+import Common.UIPatience
 
 import Games.BeleagueredCastle
 import Games.PileOn
@@ -41,12 +42,17 @@ countCardsUp ps = foldl' count 0 ps where
 betterGame :: PilePatience p => p -> p -> Bool
 betterGame = (<) `on` (countCardsUp . piles)
 
+--main = do
+--    gen <- newStdGen
+--    let p = beleagueredCastle gen
+--        tree = dfs p successors
+--        (progress, final) = break won tree
+--    -- putStr $ show {- $ best betterGame -} $ progress
+--    if not (null final)
+--        then putStr $ show (head final)
+--        else return ()
+
 main = do
     gen <- newStdGen
-    let p = pileOn gen
-        tree = dfs p successors
-        (progress, final) = break won tree
-    -- putStr $ show {- $ best betterGame -} $ progress
-    if not (null final)
-        then putStr $ show (head final)
-        else return ()
+    let p = beleagueredCastle gen
+    putStr $ concatMap show (cardLocations p 960.0 600.0)
