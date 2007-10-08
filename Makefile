@@ -2,7 +2,7 @@ BUILD := build
 
 HSFILES := $(shell find Source -name '*.hs')
 HS_PFLAGS := -prof -auto-all
-HS_OFLAGS := -O2
+HS_OFLAGS := 
 HS_CFLAGS := --make -iSource
 HSFLAGS := $(HS_OFLAGS) $(HS_CFLAGS) $(HS_LFLAGS) $(HS_PFLAGS)
 
@@ -34,8 +34,10 @@ patience_app: $(APP_EXE) $(APP_INFO_PLIST) $(APP_PKGINFO) resources
 
 resources: $(APP_NIB)
 
-$(APP_EXE): $(MFILES) $(HFILES) $()
+$(APP_EXE): $(MFILES) $(HFILES) $(HSFILES) $()
 	mkdir -p `dirname $@`
+	mkdir -p $(BUILD)/Cocoa
+	ghc $(HSFLAGS) Source/Cocoa/Main.hs -odir $(BUILD)/Cocoa -hidir $(BUILD)/Cocoa -c
 	gcc $(MFLAGS) $(MFILES) -o $(APP_EXE) $(LINKFLAGS)
 
 $(APP_INFO_PLIST): Resources/Info.plist
@@ -56,3 +58,5 @@ clean:
 	rm -rf $(BUILD)
 	rm -f $(PATIENCE)
 	rm -f *.prof
+	rm -rf $(APP_BUNDLE)
+
