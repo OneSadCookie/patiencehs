@@ -6,10 +6,12 @@ HS_OFLAGS :=
 HS_CFLAGS := --make -iSource
 HSFLAGS := $(HS_OFLAGS) $(HS_CFLAGS) $(HS_LFLAGS) $(HS_PFLAGS)
 
+HS_IDIR := $(shell ghc-pkg describe rts-1.0 | grep include-dirs | perl -pe 's|.* (.*)|$$1|')
+
 HFILES := $(shell find Source -name '*.h')
 MFILES := $(shell find Source -name '*.m')
 OFILES := $(patsubst Source/%.m,build/%.o,$(MFILES))
-M_IFLAGS := -I/Volumes/Files/Unix/lib/ghc-6.6.1/include -Ibuild/Cocoa
+M_IFLAGS := -I$(HS_IDIR) -Ibuild/Cocoa
 M_CFLAGS := -Wall -W -Wno-unused-parameter -Wnewline-eof -Werror
 M_OFLAGS := -g -O2
 MFLAGS := $(M_IFLAGS) $(M_CFLAGS) $(M_OFLAGS)
@@ -36,13 +38,13 @@ patience_app: $(APP_EXE) $(APP_INFO_PLIST) $(APP_PKGINFO) resources
 
 resources: $(APP_NIB)
 
-build/%.o: Source/%.m $(HFILES) $(BUILD)/Cocoa/Main_stub.h
+build/%.o: Source/%.m $(HFILES) build/Cocoa/Main_stub.h
 	mkdir -p `dirname $@`
 	gcc -c $(MFLAGS) $< -o $@
 
-build/%_stub.h: Source/%.hs
-	mkdir -p `dirname $@`
-	ghc -c $(HSFLAGS) $< -stubdir $(BUILD)/Cocoa
+build/Cocoa/Main_stub.h: $(HSFILES)
+	mkdir -p $(BUILD)/Cocoa
+	ghc $(HSFLAGS) Source/Cocoa/Main.hs -stubdir $(BUILD)/Cocoa -odir $(BUILD)/Cocoa -hidir $(BUILD)/Cocoa $(OFILES) -c
 
 $(APP_EXE): $(OFILES) $(HFILES) $(HSFILES)
 	mkdir -p `dirname $@`
