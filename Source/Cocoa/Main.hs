@@ -44,7 +44,7 @@ eventHandler f oldVoidPtr = do
 
 foreign export ccall stepState :: Ptr () ->  IO (Ptr ())
 stepState = eventHandler stepState where
-    --stepState a@(AppState [e]) = a
+    stepState a@(AppState [e]) = a
     stepState (AppState (h:t)) = AppState t
 
 foreign import ccall "PatienceHS.h PlaceCard" placeCard ::
