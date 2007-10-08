@@ -34,6 +34,19 @@ makeAppState start =
         states = map AnyUIPatience $ breakAfter won tree
     in AppState states
 
+eventHandler f oldVoidPtr = do
+    let oldPointer = castPtrToStablePtr oldVoidPtr
+    oldState <- deRefStablePtr oldPointer
+    let newState = f oldState
+    freeStablePtr oldPointer
+    pointer <- newStablePtr newState
+    return (castStablePtrToPtr pointer)
+
+foreign export ccall stepState :: Ptr () ->  IO (Ptr ())
+stepState = eventHandler stepState where
+    --stepState a@(AppState [e]) = a
+    stepState (AppState (h:t)) = AppState t
+
 foreign import ccall "PatienceHS.h PatienceStart" patienceStart ::
     Ptr () -> IO ()
 

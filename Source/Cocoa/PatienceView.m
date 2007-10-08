@@ -1,4 +1,5 @@
 #import "CardRenderer.h"
+#import "HSCocoaAPI.h"
 #import "PatienceView.h"
 
 @implementation PatienceView
@@ -13,6 +14,12 @@
     
     renderer = [[CardRenderer alloc] init];
     
+    [NSTimer scheduledTimerWithTimeInterval:0.001
+                                     target:self
+                                   selector:@selector(step)
+                                   userInfo:nil
+                                    repeats:YES];
+    
     return self;
 }
 
@@ -20,6 +27,11 @@
 {
     [renderer release];
     [super dealloc];
+}
+
+- (void)step
+{
+    gState = stepState(gState);
 }
 
 - (void)drawRect:(NSRect)clip

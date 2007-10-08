@@ -2,7 +2,7 @@
 
 #import "PatienceHS.h"
 
-static HsPtr gState = NULL;
+HsPtr gState = NULL;
 
 void PatienceStart(HsPtr state)
 {
