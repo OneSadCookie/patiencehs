@@ -25,4 +25,4 @@ defaultCardLocations :: GridPatience p =>
 defaultCardLocations p width height =
     concatMap (uncurry cardLocationsForPile) (piles p) where
         cardLocationsForPile name pile =
-            map (\(c, i) -> (c, i, i)) (zip pile [0..])
+            map (\(c, i) -> (c, 50.0 * i, 50.0 * i)) (zip pile [0..])

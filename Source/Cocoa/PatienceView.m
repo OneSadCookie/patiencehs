@@ -13,13 +13,13 @@
     }
     
     renderer = [[CardRenderer alloc] init];
-    /*
+    
     [NSTimer scheduledTimerWithTimeInterval:0.001
                                      target:self
                                    selector:@selector(step)
                                    userInfo:nil
                                     repeats:YES];
-    */
+    
     return self;
 }
 
@@ -31,7 +31,6 @@
 
 - (void)step
 {
-    NSLog(@"stepping");
     gState = stepState(gState);
     [self setNeedsDisplay:YES];
 }
