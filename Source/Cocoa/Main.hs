@@ -2,12 +2,15 @@
 
 module Main (main) where
 
+import Data.List
 import Foreign
 import CForeign
 import Random
 
 import Common.Card
+import Common.Helpers
 import Common.Patience
+import Common.Pile
 import Common.Search
 import Common.UIPatience
 
@@ -29,9 +32,23 @@ breakAfter p (h:t)
     | p h       = [ h ]
     | otherwise = h : breakAfter p t
 
+best :: (a -> a -> Bool) -> [a] -> [a]
+best bpred (first:rest) = first : (best' first bpred rest) where
+    best' _ _ [] = []
+    best' state bpred (h:t)
+        | state `bpred` h = h : (best' h bpred t)
+        | otherwise       = best' state bpred t
+
+countCardsUp ps = foldl' count 0 ps where
+    count n (Foundation _, pile) = n + length pile
+    count n (_           , _   ) = n
+
+betterGame :: PilePatience p => p -> p -> Bool
+betterGame = (<) `on` (countCardsUp . piles)
+
 makeAppState start =
     let tree = dfs start successors
-        states = map AnyUIPatience $ breakAfter won tree
+        states = map AnyUIPatience $ best betterGame $ breakAfter won tree
     in AppState states
 
 eventHandler f oldVoidPtr = do
