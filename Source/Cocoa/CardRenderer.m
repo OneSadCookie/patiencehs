@@ -300,12 +300,18 @@ static CGFloat Adjust(CGFloat in)
     CGContextDrawPath(context, kCGPathFillStroke);
 }
 
-- (void)translateTo:(NSPoint)where
+- (void)translateTo:(NSPoint)where for:(unsigned)seed
 {
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:Adjust(where.x) yBy:Adjust(where.y)];
+    NSAffineTransform *translate = [NSAffineTransform transform];
+    [translate translateXBy:Adjust(where.x) yBy:Adjust(where.y)];
+    
+    CGFloat maxRot = 0.0125;
+    NSAffineTransform *rotate = [NSAffineTransform transform];
+    [rotate rotateByRadians:maxRot * sin(where.x + where.y + seed)];
+    
     [NSGraphicsContext saveGraphicsState];
-    [transform concat];
+    [translate concat];
+    [rotate concat];
 }
 
 - (void)drawCardSuit:(Suit)suit
@@ -313,7 +319,7 @@ static CGFloat Adjust(CGFloat in)
               faceUp:(BOOL)faceUp
                   at:(NSPoint)where
 {
-    [self translateTo:where];
+    [self translateTo:where for:suit ^ rank ^ faceUp];
     
     if (faceUp)
     {
@@ -330,7 +336,7 @@ static CGFloat Adjust(CGFloat in)
 - (void)drawSpaceWithEmblem:(NSString *)emblem
                          at:(NSPoint)where
 {
-    [self translateTo:where];
+    [self translateTo:where for:0];
     
     CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
     

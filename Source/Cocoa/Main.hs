@@ -15,6 +15,7 @@ import Common.Search
 import Common.UIPatience
 
 import Games.BeleagueredCastle
+import Games.PileOn
 
 data AnyUIPatience = forall p. UIPatience p => AnyUIPatience p
 
@@ -48,7 +49,7 @@ betterGame = (<) `on` (countCardsUp . piles)
 
 makeAppState start =
     let tree = dfs start successors
-        states = map AnyUIPatience $ best betterGame $ breakAfter won tree
+        states = map AnyUIPatience {- $ best betterGame -} $ breakAfter won tree
     in AppState states
 
 eventHandler f oldVoidPtr = do
@@ -88,7 +89,7 @@ foreign import ccall "PatienceHS.h PatienceStart" patienceStart ::
 
 main = do
     gen <- newStdGen
-    let state = makeAppState (beleagueredCastle gen)
+    let state = makeAppState (pileOn gen)
     stable <- newStablePtr state
     let pointer = castStablePtrToPtr stable
     patienceStart pointer
