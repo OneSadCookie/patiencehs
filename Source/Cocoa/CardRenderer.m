@@ -127,8 +127,9 @@ static CGFloat Adjust(CGFloat in)
         style, NSParagraphStyleAttributeName,
         font,  NSFontAttributeName,
         nil];
-    return [[NSAttributedString alloc] initWithString:text
-                                           attributes:attributes];
+    return [[[NSAttributedString alloc]
+        initWithString:text
+            attributes:attributes] autorelease];
 }
 
 - (NSAttributedString *)string:(NSString *)text

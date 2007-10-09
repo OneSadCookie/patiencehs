@@ -2,8 +2,8 @@ BUILD := build
 
 HSFILES := $(shell find Source -name '*.hs')
 HS_PFLAGS := -prof -auto-all
-HS_OFLAGS := 
-HS_CFLAGS := --make -iSource
+HS_OFLAGS := -O2
+HS_CFLAGS := --make -optc-Ibuild/Cocoa -iSource -optl-dead_strip -optl-headerpad_max_install_names
 HSFLAGS := $(HS_OFLAGS) $(HS_CFLAGS) $(HS_LFLAGS) $(HS_PFLAGS)
 
 HS_IDIR := $(shell ghc-pkg describe rts-1.0 | grep include-dirs | perl -pe 's|.* (.*)|$$1|')
@@ -24,7 +24,7 @@ APP_CONTENTS := $(APP_BUNDLE)/Contents
 APP_EXE := $(APP_CONTENTS)/MacOS/Patience
 APP_RESOURCES := $(APP_CONTENTS)/Resources
 APP_INFO_PLIST := $(APP_CONTENTS)/Info.plist
-APP_PKGINFO := $(APP_CONTENTS)PkgInfo
+APP_PKGINFO := $(APP_CONTENTS)/PkgInfo
 
 APP_NIB := $(APP_RESOURCES)/English.lproj/MainMenu.nib/keyedobjects.nib
 
@@ -51,6 +51,9 @@ $(APP_EXE): $(OFILES) $(HFILES) $(HSFILES)
 	mkdir -p $(BUILD)/Cocoa
 	rm -f $@
 	ghc $(HSFLAGS) Source/Cocoa/Main.hs -stubdir $(BUILD)/Cocoa -odir $(BUILD)/Cocoa -hidir $(BUILD)/Cocoa $(OFILES) -o $(APP_EXE) $(LINKFLAGS)
+	mkdir -p $(APP_BUNDLE)/Contents/Frameworks
+	cp -R /Library/Frameworks/GMP.framework $(APP_BUNDLE)/Contents/Frameworks/
+	install_name_tool -change GMP.framework/Versions/A/GMP @executable_path/../Frameworks/GMP.framework/Versions/A/GMP $(APP_EXE)
 
 $(APP_INFO_PLIST): Resources/Info.plist
 	mkdir -p `dirname $@`
