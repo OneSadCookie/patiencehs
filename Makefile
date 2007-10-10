@@ -1,9 +1,12 @@
 BUILD := build
 
+SDKFLAGS := -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+SDKHSFLAGS := $(patsubst %,-optc%,$(SDKFLAGS)) $(patsubst %,-opta%,$(SDKFLAGS)) $(patsubst %,-optl%,$(SDKFLAGS))
+
 HSFILES := $(shell find Source -name '*.hs')
 HS_PFLAGS := -prof -auto-all
 HS_OFLAGS := -O2
-HS_CFLAGS := --make -optc-Ibuild/Cocoa -iSource -optl-dead_strip -optl-headerpad_max_install_names
+HS_CFLAGS := --make $(SDKHSFLAGS) -optc-Ibuild/Cocoa -iSource -optl-dead_strip -optl-headerpad_max_install_names
 HSFLAGS := $(HS_OFLAGS) $(HS_CFLAGS) $(HS_LFLAGS) $(HS_PFLAGS)
 
 HS_IDIR := $(shell ghc-pkg describe rts-1.0 | grep include-dirs | perl -pe 's|.* (.*)|$$1|')
@@ -12,7 +15,7 @@ HFILES := $(shell find Source -name '*.h')
 MFILES := $(shell find Source -name '*.m')
 OFILES := $(patsubst Source/%.m,build/%.o,$(MFILES))
 M_IFLAGS := -I$(HS_IDIR) -Ibuild/Cocoa
-M_CFLAGS := -Wall -W -Wno-unused-parameter -Wnewline-eof -Werror
+M_CFLAGS := -Wall -W -Wno-unused-parameter -Wnewline-eof -Werror -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
 M_OFLAGS := -g -O2
 MFLAGS := $(M_IFLAGS) $(M_CFLAGS) $(M_OFLAGS)
 LINKFLAGS := -framework Cocoa
