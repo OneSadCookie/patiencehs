@@ -69,7 +69,7 @@ def generate(env, **kw):
     #env['HSAFLAGS'] = []
     #env['HSLFLAGS'] = []
     
-    env['_HSINCFLAGS'] = '${_concat("-i", HSPATH, "", __env__, RDirs, TARGET, SOURCE)}'
+    env['_HSINCFLAGS'] = '$( ${_concat("-i", HSPATH, "", __env__, RDirs, TARGET, SOURCE)} $)'
     env['_HSCFLAGS'] = '${_concat("-optc", HSCFLAGS, "", __env__)}'
     env['_HSAFLAGS'] = '${_concat("-opta", HSAFLAGS, "", __env__)}'
     env['_HSLFLAGS'] = '${_concat("-optl", HSLFLAGS, "", __env__)}'

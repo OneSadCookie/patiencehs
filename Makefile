@@ -5,6 +5,7 @@ all: ghc-$(V)/bin/i386-apple-darwin/ghc-$(V) ghc-$(V)/bin/powerpc-apple-darwin/g
 
 clean:
 	rm -rf build
+	rm -rf Patience.app
 
 squeaky: clean
 	rm -rf ghc-$(V)
