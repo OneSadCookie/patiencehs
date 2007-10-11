@@ -36,10 +36,28 @@ global_env = Environment(
 
 def arch_build(arch, host, sdk, min):
     env = arch_env(global_env, arch, host, sdk, min)
-    SConscript(
+    return SConscript(
         'SConscript',
         exports = [ 'env' ],
         build_dir = 'build/' + arch)
 
-arch_build('i386', 'i386-apple-darwin', '10.4u', '10.4')
-arch_build('ppc', 'powerpc-apple-darwin', '10.4u', '10.4')
+i386_exe = arch_build('i386', 'i386-apple-darwin', '10.4u', '10.4')
+ppc_exe = arch_build('ppc', 'powerpc-apple-darwin', '10.4u', '10.4')
+
+global_env.Command(
+    target = 'Patience.app/Contents/MacOS/Patience',
+    source = [ i386_exe, ppc_exe ],
+    action = 'lipo $SOURCES -create -output $TARGET')
+
+global_env.Install(
+    dir = 'Patience.app/Contents/Resources/English.lproj/MainMenu.nib',
+    source = 'Resources/English.lproj/MainMenu.nib/keyedobjects.nib')
+
+global_env.Install(
+    dir = 'Patience.app/Contents',
+    source = 'Resources/Info.plist')
+
+global_env.Command(
+    target = 'Patience.app/Contents/PkgInfo',
+    source = [],
+    action = "echo 'APPL????' > $TARGET")

@@ -17,4 +17,9 @@ ghc-$(V)/bin/%/ghc-$(V): ghc-$(V)/bin/%/ghc
 	./configure --host=`basename \`dirname $@\`` && \
 	make in-place
 
+archive: Patience.tar.bz2
+
+Patience.tar.bz2: all
+	tar cjf $@ Patience.app
+
 .SECONDARY:
