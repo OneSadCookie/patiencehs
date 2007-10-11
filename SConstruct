@@ -21,7 +21,7 @@ global_env = Environment(
     CPPPATH = [ '$GHCINCDIR', 'Source/Cocoa' ],
     FRAMEWORKS = [ 'Cocoa' ],
     HSPATH = [ 'Source' ],
-    LINK = '$_GHCCOM',
+    LINK = '$_GHCCOM -optl-dead_strip -optl-headerpad_max_install_names',
     HSCFLAGS = archflags,
     HSAFLAGS = archflags,
     HSLFLAGS = archflags,
@@ -61,3 +61,8 @@ global_env.Command(
     target = 'Patience.app/Contents/PkgInfo',
     source = [],
     action = "echo 'APPL????' > $TARGET")
+
+global_env.Command(
+    target = Dir('Patience.app/Contents/Frameworks/GMP.framework'),
+    source = 'GMP-framework.zip',
+    action = 'mkdir -p ${TARGET.dir} && cd ${TARGET.dir} && unzip ${SOURCE.abspath}')
