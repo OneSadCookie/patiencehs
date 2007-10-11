@@ -26,7 +26,8 @@ HsScanner = Scanner(
     skeys    = ['.hs'],
     path_function = FindPathDirs('HSPATH'))
 
-HsAction = Action('$GHC $_HSINCFLAGS -c -ohi ${TARGET.base}.hi -o $TARGET $SOURCES')
+# -ohi ${TARGET.base}.hi
+HsAction = Action('$_GHCCOM -c -o $TARGET $SOURCES')
 
 def scan_ffi(node):
     text = node.get_contents()
@@ -55,12 +56,21 @@ def generate(env, **kw):
     
     SourceFileScanner.add_scanner(hs_suffix, HsScanner)
     
-    env['_HSINCFLAGS'] = '$( ${_concat("-i", HSPATH, "", __env__, RDirs, TARGET, SOURCE)} $)'
     env['GHC'] = 'ghc'
     env['GHCDIR'] = '/Volumes/Files/Unix/lib/ghc-6.6.1'
     env['GHCIMPORTDIR'] = '$GHCDIR/imports'
     env['GHCINCDIR'] = '$GHCDIR/include'
     env['HSSUFFIX'] = hs_suffix
+    #env['HSPATH'] = []
+    #env['HSCFLAGS'] = []
+    #env['HSAFLAGS'] = []
+    #env['HSLFLAGS'] = []
+    
+    env['_HSINCFLAGS'] = '$( ${_concat("-i", HSPATH, "", __env__, RDirs, TARGET, SOURCE)} $)'
+    env['_HSCFLAGS'] = '${_concat("-optc", HSCFLAGS, "", __env__)}'
+    env['_HSAFLAGS'] = '${_concat("-opta", HSAFLAGS, "", __env__)}'
+    env['_HSLFLAGS'] = '${_concat("-optl", HSLFLAGS, "", __env__)}'
+    env['_GHCCOM'] = '$GHC $_HSINCFLAGS $_HSCFLAGS $_HSAFLAGS $_HSLFLAGS'
 
 def exists(env):
     return 1
