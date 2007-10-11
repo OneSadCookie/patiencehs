@@ -47,6 +47,9 @@ def emit_hs(target, source, env):
         newtarget += scan_ffi(s)
     return (newtarget, source)
 
+def ghcdir(target, source, env, for_signature):
+    return os.popen(env['GHC'] + " --print-libdir").read().rstrip()
+
 def generate(env, **kw):
     hs_suffix = '.hs'
     
@@ -57,7 +60,7 @@ def generate(env, **kw):
     SourceFileScanner.add_scanner(hs_suffix, HsScanner)
     
     env['GHC'] = 'ghc'
-    env['GHCDIR'] = '/Volumes/Files/Unix/lib/ghc-6.6.1'
+    env['GHCDIR'] = ghcdir
     env['GHCIMPORTDIR'] = '$GHCDIR/imports'
     env['GHCINCDIR'] = '$GHCDIR/include'
     env['HSSUFFIX'] = hs_suffix
@@ -66,7 +69,7 @@ def generate(env, **kw):
     #env['HSAFLAGS'] = []
     #env['HSLFLAGS'] = []
     
-    env['_HSINCFLAGS'] = '$( ${_concat("-i", HSPATH, "", __env__, RDirs, TARGET, SOURCE)} $)'
+    env['_HSINCFLAGS'] = '${_concat("-i", HSPATH, "", __env__, RDirs, TARGET, SOURCE)}'
     env['_HSCFLAGS'] = '${_concat("-optc", HSCFLAGS, "", __env__)}'
     env['_HSAFLAGS'] = '${_concat("-opta", HSAFLAGS, "", __env__)}'
     env['_HSLFLAGS'] = '${_concat("-optl", HSLFLAGS, "", __env__)}'
