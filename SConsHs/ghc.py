@@ -26,7 +26,7 @@ HsScanner = Scanner(
     skeys    = ['.hs'],
     path_function = FindPathDirs('HSPATH'))
 
-HsAction = Action('$GHC $_HSINCFLAGS -c -o $TARGET $SOURCES')
+HsAction = Action('$GHC $_HSINCFLAGS -c -ohi ${TARGET.base}.hi -o $TARGET $SOURCES')
 
 def scan_ffi(node):
     text = node.get_contents()
