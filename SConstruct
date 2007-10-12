@@ -22,6 +22,7 @@ global_env = Environment(
     FRAMEWORKS = [ 'Cocoa' ],
     HSPATH = [ 'Source' ],
     LINK = '$_GHCCOM -optl-dead_strip -optl-headerpad_max_install_names',
+    HSFLAGS = [ '-O2' ],
     HSCFLAGS = archflags,
     HSAFLAGS = archflags,
     HSLFLAGS = archflags,

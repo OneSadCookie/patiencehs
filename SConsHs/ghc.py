@@ -65,15 +65,17 @@ def generate(env, **kw):
     env['GHCINCDIR'] = '$GHCDIR/include'
     env['HSSUFFIX'] = hs_suffix
     #env['HSPATH'] = []
+    #env['HSFLAGS'] = []
     #env['HSCFLAGS'] = []
     #env['HSAFLAGS'] = []
     #env['HSLFLAGS'] = []
     
     env['_HSINCFLAGS'] = '$( ${_concat("-i", HSPATH, "", __env__, RDirs, TARGET, SOURCE)} $)'
+    env['_HSFLAGS'] = '${_concat("", HSFLAGS, "", __env__)}'
     env['_HSCFLAGS'] = '${_concat("-optc", HSCFLAGS, "", __env__)}'
     env['_HSAFLAGS'] = '${_concat("-opta", HSAFLAGS, "", __env__)}'
     env['_HSLFLAGS'] = '${_concat("-optl", HSLFLAGS, "", __env__)}'
-    env['_GHCCOM'] = '$GHC $_HSINCFLAGS $_HSCFLAGS $_HSAFLAGS $_HSLFLAGS'
+    env['_GHCCOM'] = '$GHC $_HSFLAGS $_HSINCFLAGS $_HSCFLAGS $_HSAFLAGS $_HSLFLAGS'
 
 def exists(env):
     return 1
