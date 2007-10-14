@@ -3,9 +3,9 @@
 #import "CardPlacement.h"
 #import "PatienceHS.h"
 
-void *gState = NULL;
+HsStablePtr gState = NULL;
 
-void PatienceStart(void *state)
+void PatienceStart(HsStablePtr state)
 {
     gState = state;
     NSApplicationMain(0, NULL);

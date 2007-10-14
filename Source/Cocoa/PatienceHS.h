@@ -3,7 +3,7 @@
 
 #import "Haskell.h"
 
-extern void PatienceStart(void *state);
+extern void PatienceStart(HsStablePtr state);
 
 extern void PlaceCard(
     void   *userData,

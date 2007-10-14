@@ -52,26 +52,24 @@ makeAppState start =
         states = map AnyUIPatience {- $ best betterGame -} $ breakAfter won tree
     in AppState states
 
-eventHandler f oldVoidPtr = do
-    let oldPointer = castPtrToStablePtr oldVoidPtr
+eventHandler f oldPointer = do
     oldState <- deRefStablePtr oldPointer
     let newState = f oldState
     freeStablePtr oldPointer
-    pointer <- newStablePtr newState
-    return (castStablePtrToPtr pointer)
+    newPointer <- newStablePtr newState
+    return newPointer
 
-foreign export ccall stepState :: Ptr () ->  IO (Ptr ())
-stepState = eventHandler stepState where
-    stepState a@(AppState [e]) = a
-    stepState (AppState (h:t)) = AppState t
+foreign export ccall stepState :: StablePtr AppState ->  IO (StablePtr AppState)
+stepState = eventHandler stepState' where
+    stepState' a@(AppState [e]) = a
+    stepState' (AppState (h:t)) = AppState t
 
 foreign import ccall "PatienceHS.h PlaceCard" placeCard ::
     Ptr () -> CInt -> CInt -> CInt -> CDouble -> CDouble -> IO ()
 
 foreign export ccall placeCards ::
-    Ptr () -> Ptr () -> Double -> Double -> IO ()
-placeCards oldVoidPtr userData width height = do
-    let oldPointer = castPtrToStablePtr oldVoidPtr
+    StablePtr AppState -> Ptr () -> Double -> Double -> IO ()
+placeCards oldPointer userData width height = do
     state <- deRefStablePtr oldPointer
     (AppState (p:_)) <- return state
     let locations = cardLocations p width height
@@ -85,11 +83,10 @@ placeCards oldVoidPtr userData width height = do
     return ()
 
 foreign import ccall "PatienceHS.h PatienceStart" patienceStart ::
-    Ptr () -> IO ()
+    StablePtr AppState -> IO ()
 
 main = do
     gen <- newStdGen
     let state = makeAppState (pileOn gen)
-    stable <- newStablePtr state
-    let pointer = castStablePtrToPtr stable
-    patienceStart pointer
+    newPointer <- newStablePtr state
+    patienceStart newPointer

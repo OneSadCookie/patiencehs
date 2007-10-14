@@ -1,5 +1,5 @@
 #import "Haskell.h"
 
-extern HsPtr gState;
+extern HsStablePtr gState;
 
 #import "Main_stub.h"
