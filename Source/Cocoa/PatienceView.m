@@ -2,6 +2,17 @@
 #import "HSCocoaAPI.h"
 #import "PatienceView.h"
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
+#define NSWindowBackingLocationVideoMemory 1
+
+@interface NSWindow (LeopardExtras)
+
+// if we're not on Leopard, we're 32-bit...
+- (void)setPreferredBackingLocation:(unsigned)backingLocation;
+
+@end
+#endif
+
 @implementation PatienceView
 
 - (id)initWithFrame:(NSRect)frameRect
@@ -13,6 +24,18 @@
     }
     
     renderer = [[CardRenderer alloc] init];
+    
+    /*
+    // QuartzGL is a massive performance penalty with my current
+    // drawing code
+    if ([[self window] respondsToSelector:
+            @selector(setPreferredBackingLocation:)])
+    {
+        // Enable QuartzGL in Leopard
+        [[self window] setPreferredBackingLocation:
+            NSWindowBackingLocationVideoMemory];
+    }
+    */
     
     [NSTimer scheduledTimerWithTimeInterval:0.001
                                      target:self
