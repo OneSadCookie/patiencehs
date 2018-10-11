@@ -8,7 +8,8 @@ HsStablePtr gState = NULL;
 void PatienceStart(HsStablePtr state)
 {
     gState = state;
-    NSApplicationMain(0, NULL);
+    char const *argv = "PatienceHS";
+    NSApplicationMain(1, &argv);
 }
 
 void PlaceCard(

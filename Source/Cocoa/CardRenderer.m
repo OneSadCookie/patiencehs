@@ -58,7 +58,7 @@ static CGFloat Adjust(CGFloat in)
 
 - (void)drawCardOutline
 {
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef context = [[NSGraphicsContext currentContext] CGContext];
     
     CGFloat r = cardCornerRadius;
     
@@ -86,7 +86,7 @@ static CGFloat Adjust(CGFloat in)
 
 - (void)drawCardFrame
 {
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef context = [[NSGraphicsContext currentContext] CGContext];
     
     CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
     CGContextSetRGBStrokeColor(context, 0.0, 0.0, 0.0, 1.0);
@@ -119,7 +119,7 @@ static CGFloat Adjust(CGFloat in)
 {
     NSMutableParagraphStyle *style =
         [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
-    [style setAlignment:NSCenterTextAlignment];
+    [style setAlignment:NSTextAlignmentCenter];
     NSFont *font = [NSFont fontWithName:@"Lucida Grande"
                                    size:size];
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -276,7 +276,7 @@ static CGFloat Adjust(CGFloat in)
 {
     [self drawCardFrame];
     
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef context = [[NSGraphicsContext currentContext] CGContext];
     
     CGFloat r = cardCornerRadius;
     
@@ -338,7 +338,7 @@ static CGFloat Adjust(CGFloat in)
 {
     [self translateTo:where for:0];
     
-    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextRef context = [[NSGraphicsContext currentContext] CGContext];
     
     // CGFloat lengths[] = { 10.0, 10.0 };
     // CGContextSetLineDash(context, 0.0, lengths, sizeof(lengths) / sizeof(CGFloat));
