@@ -1,0 +1,4 @@
+.ghc.environment.*
+.vscode
+Patience.app
+dist-newstyle

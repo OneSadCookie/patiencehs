@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
+
 module Games.Spider (
     spider,
     spiderette,
@@ -11,12 +13,10 @@ import Common.Necessities
 data Spider =
     Spider { pilesS :: PileMap } |
     Spiderette { has8thTableau :: Bool, pilesS :: PileMap }
-    deriving (Eq, Ord)
+    deriving (Eq, Ord, Generic, NFData)
 
 isSpiderette (Spiderette _ _) = True
 isSpiderette _                = False
-
-instance NFData Spider
 
 instance Show Spider where
     show s = showPileMap (pilesS s)

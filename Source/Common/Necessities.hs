@@ -1,5 +1,6 @@
 module Common.Necessities (
     NFData (rnf),
+    Generic,
 
     module Common.Card,
     module Common.Deal,
@@ -11,7 +12,8 @@ module Common.Necessities (
     module Common.UIPatience,
 ) where
 
-import Control.Parallel.Strategies
+import GHC.Generics
+import Control.DeepSeq
 
 import Common.Card
 import Common.Deal

@@ -1,14 +1,12 @@
+{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
+
 module Games.BeleagueredCastle (
     beleagueredCastle
 ) where
 
 import Common.Necessities
 
-data BeleagueredCastle = BeleagueredCastle PileMap deriving (Eq, Ord)
-
--- this isn't nearly correct, but there's no default NFData for PileMap
---     and for my usage, it shouldn't matter...
-instance NFData BeleagueredCastle
+data BeleagueredCastle = BeleagueredCastle PileMap deriving (Eq, Ord, Generic, NFData)
 
 instance Show BeleagueredCastle where
     show (BeleagueredCastle m) = showPileMap m

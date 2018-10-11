@@ -1,11 +1,11 @@
-{-# OPTIONS -ffi -fglasgow-exts #-}
+{-# LANGUAGE ForeignFunctionInterface, ExistentialQuantification #-}
 
 module Main (main) where
 
 import Data.List
 import Foreign
-import CForeign
-import Random
+import Foreign.C
+import System.Random
 
 import Common.Card
 import Common.Helpers

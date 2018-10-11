@@ -9,7 +9,7 @@ module Common.Deal (
 
 import Data.List
 import qualified Data.Map as Map
-import Random
+import System.Random
 
 import Common.Card
 import Common.Deck

@@ -1,24 +1,35 @@
-V := 6.6.1
+GHC_VERSION := $(shell ghc --version | tail -c 6)
+CABAL_EXE := ./dist-newstyle/build/x86_64-osx/ghc-$(GHC_VERSION)/PatienceHS-0.1.0.0/x/PatienceHS/build/PatienceHS/PatienceHS
+APP := Patience.app
+CONTENTS := $(APP)/Contents
+INFO_PLIST := $(CONTENTS)/Info.plist
+PKGINFO := $(CONTENTS)/PkgInfo
+RESOURCES := $(CONTENTS)/Resources
+EXE := $(CONTENTS)/MacOS/Patience
 
-all: ghc-$(V)/bin/i386-apple-darwin/ghc-$(V) ghc-$(V)/bin/powerpc-apple-darwin/ghc-$(V)
-	scons -j`sysctl -n hw.ncpu | xargs perl -e 'print int(1.5 * shift);'`
+all: $(EXE) $(INFO_PLIST) $(PKGINFO)
+	rsync -av Resources/ $(RESOURCES)
 
 clean:
-	rm -rf build
+	rm -rf dist-newstyle
 	rm -rf Patience.app
-
-squeaky: clean
-	rm -rf ghc-$(V)
-
-ghc-$(V)/bin/%/ghc: ghc-$(V)-%.tar.bz2
-	tar xjmf $<
-
-ghc-$(V)/bin/%/ghc-$(V): ghc-$(V)/bin/%/ghc
-	cd ghc-$(V) && \
-	./configure --host=`basename \`dirname $@\`` && \
-	make in-place
 
 archive: all
 	tar cjf Patience.tar.bz2 Patience.app
 
-.SECONDARY:
+$(CABAL_EXE): $(glob Source/*/*.{hs,h,m})
+	cabal new-build
+
+$(EXE): $(CABAL_EXE)
+	@mkdir -p `dirname $@`
+	cp $< $@
+
+$(PKGINFO):
+	@mkdir -p `dirname $@`
+	echo -n 'APPL????' > $@
+
+$(INFO_PLIST): Info.plist
+	@mkdir -p `dirname $@`
+	cp $< $@
+
+.PHONY: all clean archive

@@ -3,7 +3,7 @@ module Common.Search (
     dfs,
 ) where
 
-import Control.Parallel.Strategies
+import Control.DeepSeq
 import qualified Data.Set as Set
 
 data Queue a = Queue [a] [a]

@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
+
 module Common.Pile (
     PileName (Foundation, Stock, Tableau, Waste),
     isFoundation,
@@ -17,6 +19,7 @@ module Common.Pile (
     pileIsAllOneRank,
 ) where
 
+import GHC.Generics
 import Control.Parallel.Strategies
 import Data.List
 
@@ -28,9 +31,7 @@ data PileName =
     Foundation Int |
     Stock |
     Tableau Int |
-    Waste deriving (Eq, Ord, Show)
-
-instance NFData PileName
+    Waste deriving (Eq, Ord, Show, Generic, NFData)
 
 isFoundation (Foundation _) = True
 isFoundation _              = False
@@ -55,8 +56,10 @@ type Hand = [ FacingCard ]
 --hands = map reverse . inits
 hands = reverse . tails . reverse -- this is like 10x faster
 
+takeHand :: Pile -> Hand -> Pile
 takeHand = flip (drop . length)
 
+giveHand :: Pile -> Hand -> Pile
 giveHand = flip ((++) . reverse)
 
 

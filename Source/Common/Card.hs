@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
+
 module Common.Card (
     Rank (Ace, Two, Three, Four, Five, Six, Seven,
           Eight, Nine, Ten, Jack, Queen, King),
@@ -13,11 +15,12 @@ module Common.Card (
     turnDown,
 ) where
 
-import Control.Parallel.Strategies
+import GHC.Generics
+import Control.DeepSeq
 
 data Rank = Ace | Two | Three | Four | Five | Six | Seven |
             Eight | Nine | Ten | Jack | Queen | King
-    deriving (Bounded, Enum, Eq, Ord)
+    deriving (Bounded, Enum, Eq, Ord, Generic, NFData)
 
 instance Show Rank where
     show Ace   = "A"
@@ -27,23 +30,19 @@ instance Show Rank where
     show King  = "K"
     show r     = show ((fromEnum r) + 1)
 
-instance NFData Rank
-
 ranks :: [ Rank ]
 ranks = [ minBound .. maxBound ]
 
 data Color = Red | Black deriving (Eq)
 
 data Suit = Hearts | Clubs | Diamonds | Spades
-    deriving (Bounded, Enum, Eq, Ord)
+    deriving (Bounded, Enum, Eq, Ord, Generic, NFData)
 
 instance Show Suit where
     show Hearts   = "H"
     show Clubs    = "C"
     show Diamonds = "D"
     show Spades   = "S"
-
-instance NFData Suit
 
 colorOfSuit Hearts   = Red
 colorOfSuit Clubs    = Black
@@ -59,7 +58,7 @@ class AbstractCard c where
 
 color card = colorOfSuit (suit card)
 
-data Card = Card Rank Suit deriving (Eq, Ord)
+data Card = Card Rank Suit deriving (Eq, Ord, Generic, NFData)
 
 instance AbstractCard Card where
     rank (Card r _) = r
@@ -68,13 +67,10 @@ instance AbstractCard Card where
 instance Show Card where
     show (Card r s) = (show r) ++ (show s)
 
-instance NFData Card where
-    rnf (Card r s) = rnf r `seq` rnf s
-
 data FacingCard =
     FaceUp   { abstractCard :: Card } |
     FaceDown { abstractCard :: Card }
-    deriving (Eq, Ord)
+    deriving (Eq, Ord, Generic, NFData)
 
 instance AbstractCard FacingCard where
     rank = rank . abstractCard
@@ -83,10 +79,6 @@ instance AbstractCard FacingCard where
 instance Show FacingCard where
     show (FaceUp   card) = "|" ++ show card ++ "|"
     show (FaceDown card) = "<" ++ show card ++ ">"
-
-instance NFData FacingCard where
-    rnf (FaceUp   card) = rnf card
-    rnf (FaceDown card) = rnf card
 
 isFaceUp (FaceUp _) = True
 isFaceUp _          = False

@@ -2,7 +2,7 @@ module Common.Shuffle (
     shuffle
 ) where
 
-import Random
+import System.Random
 
 randomElement list gen =
     let l = length list

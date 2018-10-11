@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
+
 module Games.PileOn (
     pileOn
 ) where
@@ -7,9 +9,7 @@ import Data.Map ((!))
 
 import Common.Necessities
 
-data PileOn = PileOn PileMap deriving (Eq, Ord)
-
-instance NFData PileOn
+data PileOn = PileOn PileMap deriving (Eq, Ord, Generic, NFData)
 
 instance Show PileOn where
     show (PileOn m) = showPileMap m
@@ -43,7 +43,7 @@ instance MovePatience PileOn where
 instance Patience PileOn where
     successors = defaultSuccessors
     
-    won (PileOn m) = Map.fold ((&&) . pileOK) True m
+    won (PileOn m) = Map.foldr ((&&) . pileOK) True m
 
 instance GridPatience PileOn where
     grid _ =
